@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PureClarity.Models
 {
-    public class ManagerState
+    public class CollectionState
     {
         /// <summary>
         /// Number  of items in the internal collection

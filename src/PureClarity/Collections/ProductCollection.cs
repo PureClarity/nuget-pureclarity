@@ -7,7 +7,7 @@ using PureClarity.Models;
 
 namespace PureClarity
 {
-    public class ProductManager : PCManager<Product>
+    public class ProductCollection : PCCollection<Product>
     {
         public override void AddItem(Product product)
         {
@@ -25,19 +25,19 @@ namespace PureClarity
             }
         }
 
-        public override void RemoveItem(string sku)
+        public override void RemoveItemFromCollection(string sku)
         {
             var prod = new Product(sku);
             _items.TryRemove(sku, out prod);
         }
 
-        public override void RemoveItems(IEnumerable<string> skus)
+        public override void RemoveItemsFromCollection(IEnumerable<string> skus)
         {
             if (skus.Any())
             {
                 foreach (var sku in skus)
                 {
-                    RemoveItem(sku);
+                    RemoveItemFromCollection(sku);
                 }
             }
 
