@@ -23,8 +23,8 @@ namespace PureClarity_Test
         {
             var BrandCollection = GetNewBrandCollection();
 
-            var Brand = new Brand("Test");
-            BrandCollection.AddItem(Brand);
+            var brand = new Brand("Test");
+            BrandCollection.AddItem(brand);
 
             var state = BrandCollection.GetCollectionState();
             Assert.Equal(1, state.ItemCount);
@@ -38,9 +38,9 @@ namespace PureClarity_Test
         {
             var BrandCollection = GetNewBrandCollection();
 
-            var Brand = new Brand("Test");
-            BrandCollection.AddItem(Brand);
-            BrandCollection.AddItem(Brand);
+            var brand = new Brand("Test");
+            BrandCollection.AddItem(brand);
+            BrandCollection.AddItem(brand);
 
             var state = BrandCollection.GetCollectionState();
             Assert.Equal(1, state.ItemCount);
@@ -54,8 +54,8 @@ namespace PureClarity_Test
         {
             var BrandCollection = GetNewBrandCollection();
 
-            var Brands = new List<Brand> { new Brand("Test"), new Brand("Test2") };           
-            BrandCollection.AddItems(Brands);
+            var brands = new List<Brand> { new Brand("Test"), new Brand("Test2") };           
+            BrandCollection.AddItems(brands);
 
             var state = BrandCollection.GetCollectionState();
             Assert.Equal(2, state.ItemCount);
@@ -69,8 +69,8 @@ namespace PureClarity_Test
         {
             var BrandCollection = GetNewBrandCollection();
 
-            var Brands = new List<Brand> { new Brand("Test"), new Brand("Test2"), new Brand("Test2") };
-            BrandCollection.AddItems(Brands);
+            var brands = new List<Brand> { new Brand("Test"), new Brand("Test2"), new Brand("Test2") };
+            BrandCollection.AddItems(brands);
 
             var state = BrandCollection.GetCollectionState();
             Assert.Equal(2, state.ItemCount);
@@ -89,8 +89,8 @@ namespace PureClarity_Test
             var id = "Test";
             var BrandCollection = GetNewBrandCollection();
             
-            var Brand = new Brand(id);
-            BrandCollection.AddItem(Brand);
+            var brand = new Brand(id);
+            BrandCollection.AddItem(brand);
             BrandCollection.RemoveItemFromCollection(id);
 
             var state = BrandCollection.GetCollectionState();
@@ -107,8 +107,8 @@ namespace PureClarity_Test
             var id2 = "Test2";
             var BrandCollection = GetNewBrandCollection();
             
-            var Brands = new List<Brand> { new Brand(id), new Brand(id2) };
-            BrandCollection.AddItems(Brands);
+            var brands = new List<Brand> { new Brand(id), new Brand(id2) };
+            BrandCollection.AddItems(brands);
 
             var BrandIds = new List<string> { id, id2 };
             BrandCollection.RemoveItemsFromCollection(BrandIds);

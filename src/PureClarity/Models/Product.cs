@@ -4,15 +4,16 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PureClarity.Models;
 
 namespace PureClarity
 {
-    public class Product
+    public class Product: PCModelBase
     {
         /// <summary>
         /// Unique product sku. Must be unique across all products
         /// </summary>
-        public string Sku;
+        public string Sku { get => Id; set => Id = value; }
 
         /// <summary>
         /// Name of the product as it will appear in search results and recommendations
@@ -91,7 +92,7 @@ namespace PureClarity
         /// Optional. Custom attributes which by default will be assumed to be facets to be used in the search results. 
         /// Products need to only define the attributes they have.
         /// </summary>
-        [JsonExtensionData]        
+        [JsonExtensionData]
         public IDictionary<string, JToken> Attributes { get; set; }
 
 
@@ -99,7 +100,7 @@ namespace PureClarity
         {
             Sku = sku ?? throw new ArgumentNullException(nameof(sku));
             Attributes = new Dictionary<string, JToken>();
-        }        
-        
+        }
+
     }
 }

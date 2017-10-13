@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using PureClarity.Models;
 
 namespace PureClarity.Managers
 {
@@ -15,6 +16,7 @@ namespace PureClarity.Managers
         private CategoryCollection _categoryCollection;
         private BrandCollection _brandCollection;
         private UserCollection _userCollection;
+
 
         public FeedManager(string endpointUrl, string accessKey, string secretKey)
         {
@@ -34,8 +36,14 @@ namespace PureClarity.Managers
         void AddProduct(Product product) => _productCollection.AddItem(product);
         void AddProducts(IEnumerable<Product> products) => _productCollection.AddItems(products);
 
-        void AddDeletedProductSku(string productSku) => _deletedProductCollection.AddItem(productSku);
-        void AddDeletedProductSkus(IEnumerable<string> productSkus) => _deletedProductCollection.AddItems(productSkus);
+        void AddDeletedProductSku(string productSku)
+        {
+            _deletedProductCollection.AddItem(new DeletedProductSku(productSku));
+        }
+        void AddDeletedProductSkus(IEnumerable<string> productSkus)
+        {
+            _deletedProductCollection.AddItems(productSkus.Select((sku) => { return new DeletedProductSku(sku); }));
+        }
 
         void AddCategory(Category category) => _categoryCollection.AddItem(category);
         void AddCategories(IEnumerable<Category> categories) => _categoryCollection.AddItems(categories);

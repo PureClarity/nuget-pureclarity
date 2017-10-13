@@ -8,39 +8,6 @@ using PureClarity.Models;
 namespace PureClarity
 {
     public class UserCollection : PCCollection<User>
-    {
-        public override void AddItem(User user)
-        {
-            _items.AddOrUpdate(user.UserId, user, (key, previousBrand) => { return user; });
-        }
-
-        public override void AddItems(IEnumerable<User> users)
-        {
-            if (users.Any())
-            {
-                foreach (var user in users)
-                {
-                    AddItem(user);
-                }
-            }
-        }
-
-        public override void RemoveItemFromCollection(string id)
-        {
-            var user = new User(id);
-            _items.TryRemove(id, out user);
-        }
-
-        public override void RemoveItemsFromCollection(IEnumerable<string> userIds)
-        {
-            if (userIds.Any())
-            {
-                foreach (var id in userIds)
-                {
-                    RemoveItemFromCollection(id);
-                }
-            }
-
-        }
+    {        
     }
 }

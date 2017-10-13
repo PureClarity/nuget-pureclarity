@@ -4,15 +4,17 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PureClarity.Models;
 
 namespace PureClarity
 {
-    public class User
+    public class User: PCModelBase
     {
+        
         /// <summary>
         /// Unique user id. Must be unique across all users
         /// </summary>
-        public string UserId;
+        public string UserId { get => Id; set => Id = value; }
 
         public string Email;
         public string FirstName;
