@@ -18,7 +18,7 @@ namespace PureClarity_Test
         /// <summary>
         /// Check Brand is added to collection
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddBrand()
         {
             var BrandCollection = GetNewBrandCollection();
@@ -33,7 +33,7 @@ namespace PureClarity_Test
         /// <summary>
         /// Check Brand is added to collection and then overwritten
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddBrandTwice()
         {
             var BrandCollection = GetNewBrandCollection();
@@ -49,12 +49,12 @@ namespace PureClarity_Test
         /// <summary>
         /// Check multiple Brands get added to collection
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddBrands()
         {
             var BrandCollection = GetNewBrandCollection();
 
-            var brands = new List<Brand> { new Brand("Test"), new Brand("Test2") };           
+            var brands = new List<Brand> { new Brand("Test"), new Brand("Test2") };
             BrandCollection.AddItems(brands);
 
             var state = BrandCollection.GetCollectionState();
@@ -88,7 +88,7 @@ namespace PureClarity_Test
         {
             var id = "Test";
             var BrandCollection = GetNewBrandCollection();
-            
+
             var brand = new Brand(id);
             BrandCollection.AddItem(brand);
             BrandCollection.RemoveItemFromCollection(id);
@@ -106,7 +106,7 @@ namespace PureClarity_Test
             var id = "Test";
             var id2 = "Test2";
             var BrandCollection = GetNewBrandCollection();
-            
+
             var brands = new List<Brand> { new Brand(id), new Brand(id2) };
             BrandCollection.AddItems(brands);
 
@@ -123,7 +123,7 @@ namespace PureClarity_Test
         [Fact]
         public void RemoveBrandNotInCollection()
         {
-            var sku = "Test";          
+            var sku = "Test";
             var BrandCollection = GetNewBrandCollection();
             BrandCollection.RemoveItemFromCollection(sku);
 
@@ -134,4 +134,3 @@ namespace PureClarity_Test
         #endregion
     }
 }
- 

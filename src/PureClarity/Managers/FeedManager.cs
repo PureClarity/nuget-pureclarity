@@ -33,42 +33,42 @@ namespace PureClarity.Managers
 
         #region Add
 
-        void AddProduct(Product product) => _productCollection.AddItem(product);
-        void AddProducts(IEnumerable<Product> products) => _productCollection.AddItems(products);
+        AddItemResult AddProduct(Product product) => _productCollection.AddItem(product);
+        IEnumerable<AddItemResult> AddProducts(IEnumerable<Product> products) => _productCollection.AddItems(products);
 
-        void AddDeletedProductSku(string productSku)
+        AddItemResult AddDeletedProductSku(string productSku)
         {
-            _deletedProductCollection.AddItem(new DeletedProductSku(productSku));
+            return _deletedProductCollection.AddItem(new DeletedProductSku(productSku));
         }
-        void AddDeletedProductSkus(IEnumerable<string> productSkus)
+        IEnumerable<AddItemResult> AddDeletedProductSkus(IEnumerable<string> productSkus)
         {
-            _deletedProductCollection.AddItems(productSkus.Select((sku) => { return new DeletedProductSku(sku); }));
+            return _deletedProductCollection.AddItems(productSkus.Select((sku) => { return new DeletedProductSku(sku); }));
         }
 
-        void AddCategory(Category category) => _categoryCollection.AddItem(category);
-        void AddCategories(IEnumerable<Category> categories) => _categoryCollection.AddItems(categories);
+        AddItemResult AddCategory(Category category) => _categoryCollection.AddItem(category);
+        IEnumerable<AddItemResult> AddCategories(IEnumerable<Category> categories) => _categoryCollection.AddItems(categories);
 
-        void AddBrand(Brand brand) => _brandCollection.AddItem(brand);
-        void AddBrands(IEnumerable<Brand> brands) => _brandCollection.AddItems(brands);
+        AddItemResult AddBrand(Brand brand) => _brandCollection.AddItem(brand);
+        IEnumerable<AddItemResult> AddBrands(IEnumerable<Brand> brands) => _brandCollection.AddItems(brands);
 
-        void AddUser(User user) => _userCollection.AddItem(user);
-        void AddUsers(IEnumerable<User> users) => _userCollection.AddItems(users);
+        AddItemResult AddUser(User user) => _userCollection.AddItem(user);
+        IEnumerable<AddItemResult> AddUsers(IEnumerable<User> users) => _userCollection.AddItems(users);
 
         #endregion
 
         #region Remove
 
-        void RemoveProduct(string productSku) => _productCollection.RemoveItemFromCollection(productSku);
-        void RemoveProducts(IEnumerable<string> productSkus) => _productCollection.RemoveItemsFromCollection(productSkus);
+        RemoveItemResult RemoveProduct(string productSku) => _productCollection.RemoveItemFromCollection(productSku);
+        IEnumerable<RemoveItemResult> RemoveProducts(IEnumerable<string> productSkus) => _productCollection.RemoveItemsFromCollection(productSkus);
 
-        void RemoveDeletedProductSku(string productSku) => _deletedProductCollection.RemoveItemFromCollection(productSku);
-        void RemoveDeletedProductSkus(IEnumerable<string> productSkus) => _deletedProductCollection.RemoveItemsFromCollection(productSkus);
+        RemoveItemResult RemoveDeletedProductSku(string productSku) => _deletedProductCollection.RemoveItemFromCollection(productSku);
+        IEnumerable<RemoveItemResult> RemoveDeletedProductSkus(IEnumerable<string> productSkus) => _deletedProductCollection.RemoveItemsFromCollection(productSkus);
 
-        void RemoveCategory(string categoryId) => _categoryCollection.RemoveItemFromCollection(categoryId);
-        void RemoveCategories(IEnumerable<string> categoryIds) => _categoryCollection.RemoveItemsFromCollection(categoryIds);
+        RemoveItemResult RemoveCategory(string categoryId) => _categoryCollection.RemoveItemFromCollection(categoryId);
+        IEnumerable<RemoveItemResult> RemoveCategories(IEnumerable<string> categoryIds) => _categoryCollection.RemoveItemsFromCollection(categoryIds);
 
-        void RemoveBrand(string brandId) => _brandCollection.RemoveItemFromCollection(brandId);
-        void RemoveBrands(IEnumerable<string> brandIds) => _brandCollection.RemoveItemsFromCollection(brandIds);
+        RemoveItemResult RemoveBrand(string brandId) => _brandCollection.RemoveItemFromCollection(brandId);
+        IEnumerable<RemoveItemResult> RemoveBrands(IEnumerable<string> brandIds) => _brandCollection.RemoveItemsFromCollection(brandIds);
 
         #endregion
 
