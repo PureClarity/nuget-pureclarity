@@ -74,7 +74,7 @@ namespace PureClarity_Test
             var results = productCollection.AddItems(products);
 
             Assert.Equal(3, results.Count());
-            
+
             Assert.Equal(2, results.Where((result) =>
             {
                 return result.Success;
@@ -101,10 +101,10 @@ namespace PureClarity_Test
 
             var product = new Product(sku);
             productCollection.AddItem(product);
-            productCollection.RemoveItemFromCollection(sku);
+            var result = productCollection.RemoveItemFromCollection(sku);
 
-            var state = productCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            Assert.Equal(true, result.Success);
+            Assert.Equal(product, result.Item);
         }
 
         /// <summary>
@@ -117,14 +117,19 @@ namespace PureClarity_Test
             var sku2 = "Test2";
             var productCollection = GetNewProductCollection();
 
-            var products = new List<Product> { new Product(sku), new Product(sku2) };
+            var prod1 = new Product(sku);
+            var prod2 = new Product(sku2);
+            var products = new List<Product> { prod1, prod2 };
             productCollection.AddItems(products);
 
             var productIds = new List<string> { sku, sku2 };
-            productCollection.RemoveItemsFromCollection(productIds);
+            var results = productCollection.RemoveItemsFromCollection(productIds);
 
-            var state = productCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            Assert.Equal(2, results.Count());
+            Assert.Equal(2, results.Where((result) => { return result.Success; }).Count());
+            Assert.Equal(2, results.Where((result) => { return result.Success; }).Count());
+            Assert.Equal(prod1, results.First().Item);
+            Assert.Equal(prod2, results.Last().Item);
         }
 
         /// <summary>
@@ -135,10 +140,10 @@ namespace PureClarity_Test
         {
             var sku = "Test";
             var productCollection = GetNewProductCollection();
-            productCollection.RemoveItemFromCollection(sku);
-
-            var state = productCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            var result = productCollection.RemoveItemFromCollection(sku);
+    
+            Assert.Equal(false, result.Success);
+            Assert.Equal($"{sku} could not be removed.", result.Error);
         }
 
         #endregion

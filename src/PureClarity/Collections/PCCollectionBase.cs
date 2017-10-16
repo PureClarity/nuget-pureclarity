@@ -45,9 +45,9 @@ namespace PureClarity
             return results;
         }
 
-        public virtual RemoveItemResult RemoveItemFromCollection(string id)
+        public virtual RemoveItemResult<T> RemoveItemFromCollection(string id)
         {
-            var result = new RemoveItemResult();
+            var result = new RemoveItemResult<T>();
             T item;
             result.Success = _items.TryRemove(id, out item);
             result.Item = item;
@@ -55,9 +55,9 @@ namespace PureClarity
             return result;
         }
 
-        public virtual IEnumerable<RemoveItemResult> RemoveItemsFromCollection(IEnumerable<string> itemIds)
+        public virtual IEnumerable<RemoveItemResult<T>> RemoveItemsFromCollection(IEnumerable<string> itemIds)
         {
-            var results = new List<RemoveItemResult>();
+            var results = new List<RemoveItemResult<T>>();
             if (itemIds.Any())
             {
                 foreach (var id in itemIds)

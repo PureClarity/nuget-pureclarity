@@ -1,8 +1,8 @@
 namespace PureClarity.Models
 {
-    public class RemoveItemResult : PCResultBase
+    public class RemoveItemResult<T> : PCResultBase
     {
         public string Error;
-        public object Item;
+        public T Item;
     }
 }

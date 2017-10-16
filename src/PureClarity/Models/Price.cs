@@ -2,9 +2,10 @@ using Newtonsoft.Json;
 
 namespace PureClarity.Models
 {
-    public class Price: PCModelBase
-    {        
-        public string Sku { get => Id; set => Id = value; }
+    public class Price : PCModelBase
+    {
+        public string AccountId { get => Id.Split('_')[0]; set => Id = $"{value}_{Sku}"; }
+        public string Sku { get => Id.Split('_')[1]; set => Id = $"{AccountId}_{value}"; }
         public string ParentId;
         public string[] Prices;
         public string[] SalePrices;
