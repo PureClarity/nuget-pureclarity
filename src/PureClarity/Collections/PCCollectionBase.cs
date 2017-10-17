@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PureClarity.Models;
 
-namespace PureClarity
+namespace PureClarity.Collections
 {
     public abstract class PCCollection<T> where T : PCModelBase
     {
@@ -67,6 +67,8 @@ namespace PureClarity
             }
             return results;
         }
+
+        public abstract ValidatorResult Validate();
 
         /// <summary>
         /// Gets useful information on the internal state of the collection

@@ -3,6 +3,8 @@ using Xunit;
 using PureClarity;
 using System.Collections.Generic;
 using System.Linq;
+using PureClarity.Models;
+using PureClarity.Collections;
 
 namespace PureClarity_Test
 {

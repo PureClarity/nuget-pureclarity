@@ -3,6 +3,8 @@ using Xunit;
 using PureClarity;
 using System.Collections.Generic;
 using System.Linq;
+using PureClarity.Collections;
+using PureClarity.Models;
 
 namespace PureClarity_Test
 {
@@ -24,8 +26,8 @@ namespace PureClarity_Test
         {
             var CategoryCollection = GetNewCategoryCollection();
 
-            var Category = new Category("Test");
-            var result = CategoryCollection.AddItem(Category);
+            var category = new Category("Test");
+            var result = CategoryCollection.AddItem(category);
 
             Assert.Equal(true, result.Success);
         }
@@ -38,9 +40,9 @@ namespace PureClarity_Test
         {
             var CategoryCollection = GetNewCategoryCollection();
             var id = "Test";
-            var Category = new Category(id);
-            var result = CategoryCollection.AddItem(Category);
-            result = CategoryCollection.AddItem(Category);
+            var category = new Category(id);
+            var result = CategoryCollection.AddItem(category);
+            result = CategoryCollection.AddItem(category);
 
             Assert.Equal(false, result.Success);
             Assert.Equal($"Duplicate item found: {id}. Newest item not added.", result.Error);

@@ -3,6 +3,8 @@ using Xunit;
 using PureClarity;
 using System.Collections.Generic;
 using System.Linq;
+using PureClarity.Collections;
+using PureClarity.Models;
 
 namespace PureClarity_Test
 {
@@ -24,8 +26,8 @@ namespace PureClarity_Test
         {
             var BrandCollection = GetNewBrandCollection();
 
-            var Brand = new Brand("Test");
-            var result = BrandCollection.AddItem(Brand);
+            var brand = new Brand("Test");
+            var result = BrandCollection.AddItem(brand);
 
             Assert.Equal(true, result.Success);
         }

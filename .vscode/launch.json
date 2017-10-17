@@ -4,20 +4,17 @@
    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
    "version": "0.2.0",
    "configurations": [
-        {
-            "name": ".NET Core Launch (console)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceRoot}/Nuget-PureClarity/bin/Debug/netcoreapp2.0/Nuget-PureClarity.dll",
-            "args": [],
-            "cwd": "${workspaceRoot}/Nuget-PureClarity",
-            // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
-            "console": "internalConsole",
-            "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart"
-        },
+       {
+           "name": "Debug Benchmark",
+           "type": "coreclr",
+           "request": "launch",
+           "preLaunchTask": "build",
+           "program": "${workspaceRoot}/src/PureClarity-Benchmark/bin/Debug/netcoreapp2.0/PureClarity-Benchmark.dll",
+           "args": ["-c Debug"],
+           "cwd": "${workspaceRoot}/src/PureClarity-Benchmark",
+           "stopAtEntry": true,
+           "console": "internalConsole"
+       },        
         {
             "name": ".NET Core Attach",
             "type": "coreclr",

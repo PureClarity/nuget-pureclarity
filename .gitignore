@@ -10,6 +10,9 @@
 *.sln.docstates
 .directory
 
+# User-specific dirs
+[Bb]enchmarkDotNet*/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -24,6 +27,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+
 
 # Visual Studio 2015 cache/options directory
 .vs/
