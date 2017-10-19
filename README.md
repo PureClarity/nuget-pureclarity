@@ -19,7 +19,7 @@ Sets the endpoint URL, Access Key and Secret Key to use when making calls to Pur
 
 **`IEnumerable<AddItemResult> AddProducts(Products)`**
 
-Adds a product (or products) that you wish to send to PureClarity in a feed to an internal collection. If a product with the same Sku has already been added then the new product will overwrite it.
+Adds a product (or products) that you wish to send to PureClarity in a feed to an internal collection. If a product with the same Sku has already been added then the AddItemResult will return with Success: false and an error.
 
 
 ### Remove Product(s)
@@ -37,7 +37,7 @@ Removes a product (or products) by Sku from the internal collection. If Sku is n
 
 **`IEnumerable<AddItemResult> AddCategories(Categories)`**
 
-Adds a Category (or Categories) that you wish to send to PureClarity in a feed to an internal collection. If a Category with the same Id has already been added then the new Category will overwrite it.
+Adds a Category (or Categories) that you wish to send to PureClarity in a feed to an internal collection. If a Category with the same Id has already been added then the AddItemResult will return with Success: false and an error.
 
 
 ### Remove Category(ies)
@@ -55,7 +55,7 @@ Removes a Category (or Categories) by Id from the internal collection. If Id is 
 
 **`IEnumerable<AddItemResult> AddBrands(Brands)`**
 
-Adds a Brand (or Brands) that you wish to send to PureClarity in a feed to an internal collection. If a Brand with the same Id has already been added then the new Brand will overwrite it.
+Adds a Brand (or Brands) that you wish to send to PureClarity in a feed to an internal collection. If a Brand with the same Id has already been added then the AddItemResult will return with Success: false and an error.
 
 ### Remove Brand(s)
 
@@ -72,7 +72,7 @@ Removes a Brand (or Brands) by Id from the internal collection. If Id is not in 
 
 **`IEnumerable<AddItemResult> AddUsers(Users)`**
 
-Adds a User (or Users) that you wish to send to PureClarity in a feed to an internal collection. If a User with the same Id has already been added then the new User will overwrite it.
+Adds a User (or Users) that you wish to send to PureClarity in a feed to an internal collection. If a User with the same Id has already been added then the AddItemResult will return with Success: false and an error.
 
 ### Remove User(s)
 
