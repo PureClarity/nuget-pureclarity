@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace PureClarity.Models
 {
-    public class FeedValidatorResult : PCResultBase
+    public class FeedValidationResult : PCResultBase
     {
         public ValidatorResult ProductValidationResult;
         public ValidatorResult CategoryValidationResult;

@@ -9,7 +9,7 @@ namespace PureClarity.Managers
 {
     public class FeedManager
     {
-        private string _region;
+        private Region _region;
         private string _endpoint;
         private string _accessKey;
         private string _secretKey;
@@ -21,12 +21,12 @@ namespace PureClarity.Managers
         private UserCollection _userCollection;
 
 
-        public FeedManager(string endpointUrl, string accessKey, string secretKey, string region)
+        public FeedManager(string endpointUrl, string accessKey, string secretKey, Region region)
         {
             _endpoint = endpointUrl ?? throw new System.ArgumentNullException(nameof(endpointUrl));
             _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
             _secretKey = secretKey ?? throw new System.ArgumentNullException(nameof(secretKey));
-            _region = region ?? throw new System.ArgumentNullException(nameof(region));
+            _region = region;
 
             _productCollection = new ProductCollection();
             _categoryCollection = new CategoryCollection();
@@ -82,9 +82,9 @@ namespace PureClarity.Managers
 
         #region Validate
 
-        public FeedValidatorResult Validate()
+        public FeedValidationResult Validate()
         {
-            var validationResult = new FeedValidatorResult();
+            var validationResult = new FeedValidationResult();
             validationResult.ProductValidationResult = _productCollection.Validate();
             /* validationResult.CategoryValidationResult = _categoryCollection.Validate();
             validationResult.BrandValidationResult = _brandCollection.Validate();
@@ -101,11 +101,15 @@ namespace PureClarity.Managers
 
         #region Publish
 
-        public async Task<PublishFeedResult> PublishProductFeed()
+        public async Task<PublishFeedResult> Publish()
         {
             var feed = ConversionManager.ProcessProductFeed(_productCollection.GetItems());
-            var publishManager = new PublishManager(_accessKey,_secretKey);
-            return await publishManager.PublishProductFeed(feed);
+            var publishManager = new PublishManager(_accessKey,_secretKey, _region);
+            var publishProducts = publishManager.PublishProductFeed(feed);
+
+            await Task.WhenAll(publishProducts);
+
+            return await publishProducts;
         }
 
         #endregion
