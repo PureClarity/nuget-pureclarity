@@ -6,14 +6,14 @@ using System.Collections;
 using System.Collections.Generic;
 using PureClarity.Models;
 
-namespace PureClarity
+namespace PureClarity.Models
 {
     public class Brand : PCModelBase
     {
         /// <summary>
         /// Unique brand id. Must be unique across all brands
         /// </summary>
-        public string Id { get => base.Id; set => base.Id = value; }
+        new public string Id { get => base.Id; set => base.Id = value; }
 
         /// <summary>
         /// This is the name that will be displayed for each brand in recommenders.

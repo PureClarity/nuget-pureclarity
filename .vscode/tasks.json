@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/Nuget-PureClarity/Nuget-PureClarity.csproj"
+                "${workspaceRoot}/src/PureClarity-Benchmark"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"

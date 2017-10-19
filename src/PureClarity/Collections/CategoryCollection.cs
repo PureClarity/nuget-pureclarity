@@ -5,9 +5,13 @@ using System.Linq;
 using PureClarity;
 using PureClarity.Models;
 
-namespace PureClarity
+namespace PureClarity.Collections
 {
     public class CategoryCollection : PCCollection<Category>
-    {       
+    {
+        public override ValidatorResult Validate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

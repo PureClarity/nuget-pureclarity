@@ -2,6 +2,9 @@ using System;
 using Xunit;
 using PureClarity;
 using System.Collections.Generic;
+using System.Linq;
+using PureClarity.Collections;
+using PureClarity.Models;
 
 namespace PureClarity_Test
 {
@@ -18,47 +21,46 @@ namespace PureClarity_Test
         /// <summary>
         /// Check Brand is added to collection
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddBrand()
         {
             var BrandCollection = GetNewBrandCollection();
 
             var brand = new Brand("Test");
-            BrandCollection.AddItem(brand);
+            var result = BrandCollection.AddItem(brand);
 
-            var state = BrandCollection.GetCollectionState();
-            Assert.Equal(1, state.ItemCount);
+            Assert.Equal(true, result.Success);
         }
 
         /// <summary>
-        /// Check Brand is added to collection and then overwritten
+        /// Check Brand is added to collection and then returns error
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddBrandTwice()
         {
             var BrandCollection = GetNewBrandCollection();
+            var id = "Test";
+            var Brand = new Brand(id);
+            var result = BrandCollection.AddItem(Brand);
+            result = BrandCollection.AddItem(Brand);
 
-            var brand = new Brand("Test");
-            BrandCollection.AddItem(brand);
-            BrandCollection.AddItem(brand);
-
-            var state = BrandCollection.GetCollectionState();
-            Assert.Equal(1, state.ItemCount);
+            Assert.Equal(false, result.Success);
+            Assert.Equal($"Duplicate item found: {id}. Newest item not added.", result.Error);
         }
 
         /// <summary>
         /// Check multiple Brands get added to collection
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddBrands()
         {
             var BrandCollection = GetNewBrandCollection();
 
-            var brands = new List<Brand> { new Brand("Test"), new Brand("Test2") };           
-            BrandCollection.AddItems(brands);
+            var Brands = new List<Brand> { new Brand("Test"), new Brand("Test2") };
+            var results = BrandCollection.AddItems(Brands);
 
-            var state = BrandCollection.GetCollectionState();
-            Assert.Equal(2, state.ItemCount);
+            Assert.Equal(2, results.Count());
+            Assert.Equal(true, results.All((result) => { return result.Success; }));
         }
 
         /// <summary>
@@ -69,11 +71,21 @@ namespace PureClarity_Test
         {
             var BrandCollection = GetNewBrandCollection();
 
-            var brands = new List<Brand> { new Brand("Test"), new Brand("Test2"), new Brand("Test2") };
-            BrandCollection.AddItems(brands);
+            var id = "Test2";
+            var Brands = new List<Brand> { new Brand("Test"), new Brand(id), new Brand(id) };
+            var results = BrandCollection.AddItems(Brands);
 
-            var state = BrandCollection.GetCollectionState();
-            Assert.Equal(2, state.ItemCount);
+            Assert.Equal(3, results.Count());
+
+            Assert.Equal(2, results.Where((result) =>
+            {
+                return result.Success;
+            }).Count());
+
+            Assert.Equal(1, results.Where((result) =>
+            {
+                return !result.Success && result.Error == $"Duplicate item found: {id}. Newest item not added.";
+            }).Count());
         }
 
         #endregion
@@ -86,15 +98,15 @@ namespace PureClarity_Test
         [Fact]
         public void RemoveBrand()
         {
-            var id = "Test";
+            var sku = "Test";
             var BrandCollection = GetNewBrandCollection();
-            
-            var brand = new Brand(id);
-            BrandCollection.AddItem(brand);
-            BrandCollection.RemoveItemFromCollection(id);
 
-            var state = BrandCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            var Brand = new Brand(sku);
+            BrandCollection.AddItem(Brand);
+            var result = BrandCollection.RemoveItemFromCollection(sku);
+
+            Assert.Equal(true, result.Success);
+            Assert.Equal(Brand, result.Item);
         }
 
         /// <summary>
@@ -103,18 +115,23 @@ namespace PureClarity_Test
         [Fact]
         public void RemoveBrands()
         {
-            var id = "Test";
-            var id2 = "Test2";
+            var sku = "Test";
+            var sku2 = "Test2";
             var BrandCollection = GetNewBrandCollection();
-            
-            var brands = new List<Brand> { new Brand(id), new Brand(id2) };
-            BrandCollection.AddItems(brands);
 
-            var BrandIds = new List<string> { id, id2 };
-            BrandCollection.RemoveItemsFromCollection(BrandIds);
+            var prod1 = new Brand(sku);
+            var prod2 = new Brand(sku2);
+            var Brands = new List<Brand> { prod1, prod2 };
+            BrandCollection.AddItems(Brands);
 
-            var state = BrandCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            var BrandIds = new List<string> { sku, sku2 };
+            var results = BrandCollection.RemoveItemsFromCollection(BrandIds);
+
+            Assert.Equal(2, results.Count());
+            Assert.Equal(2, results.Where((result) => { return result.Success; }).Count());
+            Assert.Equal(2, results.Where((result) => { return result.Success; }).Count());
+            Assert.Equal(prod1, results.First().Item);
+            Assert.Equal(prod2, results.Last().Item);
         }
 
         /// <summary>
@@ -123,15 +140,14 @@ namespace PureClarity_Test
         [Fact]
         public void RemoveBrandNotInCollection()
         {
-            var sku = "Test";          
+            var sku = "Test";
             var BrandCollection = GetNewBrandCollection();
-            BrandCollection.RemoveItemFromCollection(sku);
-
-            var state = BrandCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            var result = BrandCollection.RemoveItemFromCollection(sku);
+    
+            Assert.Equal(false, result.Success);
+            Assert.Equal($"{sku} could not be removed.", result.Error);
         }
 
         #endregion
     }
 }
- 

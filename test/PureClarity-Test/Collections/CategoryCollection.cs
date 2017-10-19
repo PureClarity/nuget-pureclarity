@@ -2,6 +2,9 @@ using System;
 using Xunit;
 using PureClarity;
 using System.Collections.Generic;
+using System.Linq;
+using PureClarity.Collections;
+using PureClarity.Models;
 
 namespace PureClarity_Test
 {
@@ -13,52 +16,51 @@ namespace PureClarity_Test
             return new CategoryCollection();
         }
 
-        #region Add Categories
+         #region Add Categories
 
         /// <summary>
         /// Check Category is added to collection
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddCategory()
         {
             var CategoryCollection = GetNewCategoryCollection();
 
-            var Category = new Category("Test");
-            CategoryCollection.AddItem(Category);
+            var category = new Category("Test");
+            var result = CategoryCollection.AddItem(category);
 
-            var state = CategoryCollection.GetCollectionState();
-            Assert.Equal(1, state.ItemCount);
+            Assert.Equal(true, result.Success);
         }
 
         /// <summary>
-        /// Check Category is added to collection and then overwritten
+        /// Check Category is added to collection and then returns error
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddCategoryTwice()
         {
             var CategoryCollection = GetNewCategoryCollection();
+            var id = "Test";
+            var category = new Category(id);
+            var result = CategoryCollection.AddItem(category);
+            result = CategoryCollection.AddItem(category);
 
-            var Category = new Category("Test");
-            CategoryCollection.AddItem(Category);
-            CategoryCollection.AddItem(Category);
-
-            var state = CategoryCollection.GetCollectionState();
-            Assert.Equal(1, state.ItemCount);
+            Assert.Equal(false, result.Success);
+            Assert.Equal($"Duplicate item found: {id}. Newest item not added.", result.Error);
         }
 
         /// <summary>
         /// Check multiple Categories get added to collection
         /// </summary>
-        [Fact]        
+        [Fact]
         public void AddCategories()
         {
             var CategoryCollection = GetNewCategoryCollection();
 
-            var Categories = new List<Category> { new Category("Test"), new Category("Test2") };           
-            CategoryCollection.AddItems(Categories);
+            var Categories = new List<Category> { new Category("Test"), new Category("Test2") };
+            var results = CategoryCollection.AddItems(Categories);
 
-            var state = CategoryCollection.GetCollectionState();
-            Assert.Equal(2, state.ItemCount);
+            Assert.Equal(2, results.Count());
+            Assert.Equal(true, results.All((result) => { return result.Success; }));
         }
 
         /// <summary>
@@ -69,11 +71,21 @@ namespace PureClarity_Test
         {
             var CategoryCollection = GetNewCategoryCollection();
 
-            var Categories = new List<Category> { new Category("Test"), new Category("Test2"), new Category("Test2") };
-            CategoryCollection.AddItems(Categories);
+            var id = "Test2";
+            var Categories = new List<Category> { new Category("Test"), new Category(id), new Category(id) };
+            var results = CategoryCollection.AddItems(Categories);
 
-            var state = CategoryCollection.GetCollectionState();
-            Assert.Equal(2, state.ItemCount);
+            Assert.Equal(3, results.Count());
+
+            Assert.Equal(2, results.Where((result) =>
+            {
+                return result.Success;
+            }).Count());
+
+            Assert.Equal(1, results.Where((result) =>
+            {
+                return !result.Success && result.Error == $"Duplicate item found: {id}. Newest item not added.";
+            }).Count());
         }
 
         #endregion
@@ -86,15 +98,15 @@ namespace PureClarity_Test
         [Fact]
         public void RemoveCategory()
         {
-            var id = "Test";
+            var sku = "Test";
             var CategoryCollection = GetNewCategoryCollection();
-            
-            var Category = new Category(id);
-            CategoryCollection.AddItem(Category);
-            CategoryCollection.RemoveItemFromCollection(id);
 
-            var state = CategoryCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            var Category = new Category(sku);
+            CategoryCollection.AddItem(Category);
+            var result = CategoryCollection.RemoveItemFromCollection(sku);
+
+            Assert.Equal(true, result.Success);
+            Assert.Equal(Category, result.Item);
         }
 
         /// <summary>
@@ -103,18 +115,23 @@ namespace PureClarity_Test
         [Fact]
         public void RemoveCategories()
         {
-            var id = "Test";
-            var id2 = "Test2";
+            var sku = "Test";
+            var sku2 = "Test2";
             var CategoryCollection = GetNewCategoryCollection();
-            
-            var Categories = new List<Category> { new Category(id), new Category(id2) };
+
+            var prod1 = new Category(sku);
+            var prod2 = new Category(sku2);
+            var Categories = new List<Category> { prod1, prod2 };
             CategoryCollection.AddItems(Categories);
 
-            var CategoryIds = new List<string> { id, id2 };
-            CategoryCollection.RemoveItemsFromCollection(CategoryIds);
+            var CategoryIds = new List<string> { sku, sku2 };
+            var results = CategoryCollection.RemoveItemsFromCollection(CategoryIds);
 
-            var state = CategoryCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            Assert.Equal(2, results.Count());
+            Assert.Equal(2, results.Where((result) => { return result.Success; }).Count());
+            Assert.Equal(2, results.Where((result) => { return result.Success; }).Count());
+            Assert.Equal(prod1, results.First().Item);
+            Assert.Equal(prod2, results.Last().Item);
         }
 
         /// <summary>
@@ -123,12 +140,12 @@ namespace PureClarity_Test
         [Fact]
         public void RemoveCategoryNotInCollection()
         {
-            var sku = "Test";          
+            var sku = "Test";
             var CategoryCollection = GetNewCategoryCollection();
-            CategoryCollection.RemoveItemFromCollection(sku);
-
-            var state = CategoryCollection.GetCollectionState();
-            Assert.Equal(0, state.ItemCount);
+            var result = CategoryCollection.RemoveItemFromCollection(sku);
+    
+            Assert.Equal(false, result.Success);
+            Assert.Equal($"{sku} could not be removed.", result.Error);
         }
 
         #endregion
