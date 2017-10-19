@@ -29,13 +29,12 @@ namespace PureClarity.Models
         /// <summary>
         /// Optional. Custom attributes for use in segmentation and rules
         /// </summary>
-        [JsonExtensionData]
-        public IDictionary<string, JToken> CustomFields { get; set; }
+        public IDictionary<string, IEnumerable<string>> CustomFields { get; set; }
 
-        public User(string id)
+        public User(string userId)
         {
-            UserId = id ?? throw new ArgumentNullException(nameof(id));
-            CustomFields = new Dictionary<string, JToken>();
+            UserId = userId ?? throw new ArgumentNullException(nameof(userId));
+            CustomFields = new Dictionary<string, IEnumerable<string>>();
         }        
         
     }

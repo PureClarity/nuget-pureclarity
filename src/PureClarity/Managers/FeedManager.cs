@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PureClarity.Collections;
 using PureClarity.Models;
 
@@ -8,6 +9,7 @@ namespace PureClarity.Managers
 {
     public class FeedManager
     {
+        private string _region;
         private string _endpoint;
         private string _accessKey;
         private string _secretKey;
@@ -19,11 +21,12 @@ namespace PureClarity.Managers
         private UserCollection _userCollection;
 
 
-        public FeedManager(string endpointUrl, string accessKey, string secretKey)
+        public FeedManager(string endpointUrl, string accessKey, string secretKey, string region)
         {
-            _endpoint = endpointUrl;
-            _accessKey = accessKey;
-            _secretKey = secretKey;
+            _endpoint = endpointUrl ?? throw new System.ArgumentNullException(nameof(endpointUrl));
+            _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
+            _secretKey = secretKey ?? throw new System.ArgumentNullException(nameof(secretKey));
+            _region = region ?? throw new System.ArgumentNullException(nameof(region));
 
             _productCollection = new ProductCollection();
             _categoryCollection = new CategoryCollection();
@@ -79,11 +82,41 @@ namespace PureClarity.Managers
 
         #region Validate
 
+        public FeedValidatorResult Validate()
+        {
+            var validationResult = new FeedValidatorResult();
+            validationResult.ProductValidationResult = _productCollection.Validate();
+            /* validationResult.CategoryValidationResult = _categoryCollection.Validate();
+            validationResult.BrandValidationResult = _brandCollection.Validate();
+            validationResult.UserValidationResult = _userCollection.Validate(); */
+            validationResult.Success = validationResult.ProductValidationResult.Success;
+            /* && validationResult.CategoryValidationResult.Success
+            && validationResult.BrandValidationResult.Success
+            && validationResult.UserValidationResult.Success; */
+
+            return validationResult;
+        }
+
+        #endregion
+
+        #region Publish
+
+        public async Task<PublishFeedResult> PublishProductFeed()
+        {
+            var feed = ConversionManager.ProcessProductFeed(_productCollection.GetItems());
+            var publishManager = new PublishManager(_accessKey,_secretKey);
+            return await publishManager.PublishProductFeed(feed);
+        }
+
         #endregion
 
         #region CollectionState
 
         public CollectionState GetProductCollectionState() => _productCollection.GetCollectionState();
+        public CollectionState GetCategoryCollectionState() => _categoryCollection.GetCollectionState();
+        public CollectionState GetBrandCollectionState() => _brandCollection.GetCollectionState();
+        public CollectionState GetUserCollectionState() => _userCollection.GetCollectionState();
+
 
         #endregion
 

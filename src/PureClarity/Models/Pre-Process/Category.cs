@@ -13,7 +13,7 @@ namespace PureClarity.Models
         /// <summary>
         /// Unique category id. Must be unique across all categoriues
         /// </summary>
-        public string Id { get => base.Id; set => base.Id = value; }
+        new public string Id { get => base.Id; set => base.Id = value; }
 
         /// <summary>
         /// This is the name that will be displayed for each category in recommenders.

@@ -13,7 +13,7 @@ namespace PureClarity.Collections
         public PCCollection()
         {
             _items = new ConcurrentDictionary<string, T>();
-        }       
+        }
 
         public virtual AddItemResult AddItem(T item)
         {
@@ -66,6 +66,11 @@ namespace PureClarity.Collections
                 }
             }
             return results;
+        }
+
+        public virtual IEnumerable<T> GetItems()
+        {
+            return _items.Select((itemKVP) => itemKVP.Value);
         }
 
         public abstract ValidatorResult Validate();

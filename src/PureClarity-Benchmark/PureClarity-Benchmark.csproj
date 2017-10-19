@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.9" />
     <PackageReference Include="Bogus" Version="18.0.2" />
+    <PackageReference Include="SSH.NET" Version="2016.1.0" />
   </ItemGroup>
   <PropertyGroup>
     <OutputType>Exe</OutputType>

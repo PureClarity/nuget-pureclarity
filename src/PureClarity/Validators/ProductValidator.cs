@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using PureClarity.Models;
@@ -7,6 +8,31 @@ namespace PureClarity.Validators
     public class ProductValidator : PCValidationBase
     {
         private HashSet<string> Currencies;
+
+        const string _currencyError = "All products that are not a parent must contain a price for every currency present in the feed";
+        const string _salesCurrencyError = "A product must contain a sales price for every currency present in the feed, when a product has a sales price";
+
+        public ProductValidator()
+        {
+            Currencies = new HashSet<string>();
+        }
+
+        public void ValidateUnnassignedVariants(ConcurrentDictionary<string, List<Product>> unnassignedVariants)
+        {
+            if (unnassignedVariants.Count != 0)
+            {
+                foreach (var kvp in unnassignedVariants)
+                {
+                    var errors = new List<string>();
+                    foreach (var variant in kvp.Value)
+                    {
+                        errors.Add($"Item {variant.Id} was added but parent {kvp.Key} was never added");
+                    }
+
+                    InvalidRecords.Add(kvp.Key, errors);
+                }
+            }
+        }
 
         public void GetAllCurrencies(IEnumerable<Product> products)
         {
@@ -47,11 +73,9 @@ namespace PureClarity.Validators
         {
             var priceErrors = new List<string>();
 
-            if (!string.IsNullOrWhiteSpace(product.ParentId) && product.Prices.Count == 0)
-            {
-                priceErrors.Add("Parent specified but no prices set. Variants must have a price");
-                return priceErrors;
-            }
+            //TODO: Check variants have prices and validate
+
+
 
             if (product.Prices.Count > 0)
             {
@@ -70,14 +94,6 @@ namespace PureClarity.Validators
 
 
             return priceErrors;
-        }
-
-        const string _currencyError = "All products that are not a parent must contain a price for every currency present in the feed";
-        const string _salesCurrencyError = "A product must contain a sales price for every currency present in the feed, when a product has a sales price";
-
-        public ProductValidator()
-        {
-            Currencies = new HashSet<string>();
         }
 
         private void ValidateCurrencies(IEnumerable<ProductPrice> prices, ref List<string> errors, bool salePrices)

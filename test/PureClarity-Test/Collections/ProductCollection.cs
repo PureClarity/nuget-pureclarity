@@ -18,7 +18,7 @@ namespace PureClarity_Test
 
         private Product CreateProduct(string testValue)
         {
-            var testCategory = new[] { testValue };
+            var testCategory = new List<string>{ testValue };
             return new Product(testValue, testValue, testValue, testValue, testValue, testCategory);
         }
 

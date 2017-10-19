@@ -18,7 +18,7 @@ namespace PureClarity.Models
         /// <summary>
         /// An array of category ids
         /// </summary>
-        public string[] Categories;
+        public List<string> Categories;
 
         /// <summary>
         /// Name of the product as it will appear in search results and recommendations
@@ -105,14 +105,11 @@ namespace PureClarity.Models
         /// Optional. Custom attributes which by default will be assumed to be facets to be used in the search results. 
         /// Products need to only define the attributes they have.
         /// </summary>
-        [JsonExtensionData]
-        public IDictionary<string, JToken> Attributes { get; set; }
+        public IDictionary<string, IEnumerable<string>> Attributes { get; set; }
 
-
-        [JsonIgnore]
         const string MandatoryFieldMessage = "is a mandatory field";
 
-        public Product(string sku, string title, string description, string link, string image, string[] categories)
+        public Product(string sku, string title, string description, string link, string image, List<string> categories)
         {
             Sku = sku ?? throw new ArgumentNullException(nameof(sku), $"{nameof(sku)} {MandatoryFieldMessage}");
             Title = title ?? throw new ArgumentNullException(nameof(title), $"{nameof(title)} {MandatoryFieldMessage}");
@@ -123,7 +120,7 @@ namespace PureClarity.Models
             Prices = new List<ProductPrice>();
             SalePrices = new List<ProductPrice>();
             Variants = new List<Product>();
-            Attributes = new Dictionary<string, JToken>();
+            Attributes = new Dictionary<string, IEnumerable<string>>();
         }
 
     }
