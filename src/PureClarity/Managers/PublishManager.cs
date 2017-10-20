@@ -15,13 +15,14 @@ namespace PureClarity.Managers
     {
         private readonly string accessKey;
         private readonly string secretKey;
-
+        private readonly Region region;
         private readonly string dateFormat = "yyyyMdHHmmss";
 
-        public PublishManager(string accessKey, string secretKey)
+        public PublishManager(string accessKey, string secretKey, Region region)
         {
             this.accessKey = accessKey;
             this.secretKey = secretKey;
+            this.region = region;
         }
 
         public async Task<PublishFeedResult> PublishProductFeed(ProcessedProductFeed products)
@@ -37,6 +38,20 @@ namespace PureClarity.Managers
                 return new PublishFeedResult { Success = false, Error = e.Message };
             }
         }
+        
+       /*  public async Task<PublishDeltaResult> PublishProductDeltas(ProcessedProductFeed products)
+        {
+            try
+            {
+                var prods = JSONSerialization.SerializeToJSON(products);
+                await UploadToSTFP(prods);
+                return new PublishDeltaResult { Success = true, Token = "" };
+            }
+            catch (Exception e)
+            {
+                return new PublishDeltaResult { Success = false, Error = e.Message };
+            }
+        } */
 
         private async Task UploadToSTFP(string json)
         {
@@ -53,5 +68,7 @@ namespace PureClarity.Managers
                 }
             }
         }
+
+        
     }
 }
