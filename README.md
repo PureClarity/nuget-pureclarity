@@ -91,7 +91,7 @@ Validates the feed and returns a validation response. The validation response co
 
 ### Publish Feed
 
-**`PublishFeedResult PublishProductFeed()`**
+**`PublishFeedResult Publish()`**
 
-Publishes a validated product feed to the PureClarity SFTP server and returns the publish result.
+Publishes validated feeds to the PureClarity SFTP server and returns the publish result.
 
