@@ -9,7 +9,7 @@ namespace PureClarity.Managers
 {
     public class FeedManager
     {
-        private Region _region;
+        private int _region;
         private string _endpoint;
         private string _accessKey;
         private string _secretKey;
@@ -21,7 +21,7 @@ namespace PureClarity.Managers
         private UserCollection _userCollection;
 
 
-        public FeedManager(string endpointUrl, string accessKey, string secretKey, Region region)
+        public FeedManager(string endpointUrl, string accessKey, string secretKey, int region)
         {
             _endpoint = endpointUrl ?? throw new System.ArgumentNullException(nameof(endpointUrl));
             _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
