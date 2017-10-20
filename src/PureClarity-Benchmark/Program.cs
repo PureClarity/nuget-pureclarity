@@ -56,7 +56,7 @@ namespace PureClarity_Benchmark
         [Benchmark]
         public static void RunSequentialBenchmark()
         {
-            var feedManager = new FeedManager("api.pureclarity.dev", "7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", Region.EU_West_1);
+            var feedManager = new FeedManager("api.pureclarity.dev", "7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
             feedManager.AddProducts(_products);
             feedManager.Validate();
             var publishResult = feedManager.Publish().Result;
@@ -66,7 +66,7 @@ namespace PureClarity_Benchmark
         [Benchmark]
         public static void RunParallelBenchmark()
         {
-            var feedManager = new FeedManager("api.pureclarity.dev", "7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", Region.EU_West_1);
+            var feedManager = new FeedManager("api.pureclarity.dev", "7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
 
             System.Threading.Tasks.Parallel.ForEach(_products, (prod) =>
             {

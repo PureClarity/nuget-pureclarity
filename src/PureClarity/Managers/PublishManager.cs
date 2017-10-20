@@ -15,10 +15,10 @@ namespace PureClarity.Managers
     {
         private readonly string accessKey;
         private readonly string secretKey;
-        private readonly Region region;
+        private readonly int region;
         private readonly string dateFormat = "yyyyMdHHmmss";
 
-        public PublishManager(string accessKey, string secretKey, Region region)
+        public PublishManager(string accessKey, string secretKey, int region)
         {
             this.accessKey = accessKey;
             this.secretKey = secretKey;
@@ -30,7 +30,8 @@ namespace PureClarity.Managers
             try
             {
                 var prods = JSONSerialization.SerializeToJSON(products);
-                await UploadToSTFP(prods);
+                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                await UploadToSTFP(prods, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
             catch (Exception e)
@@ -38,24 +39,24 @@ namespace PureClarity.Managers
                 return new PublishFeedResult { Success = false, Error = e.Message };
             }
         }
-        
-       /*  public async Task<PublishDeltaResult> PublishProductDeltas(ProcessedProductFeed products)
-        {
-            try
-            {
-                var prods = JSONSerialization.SerializeToJSON(products);
-                await UploadToSTFP(prods);
-                return new PublishDeltaResult { Success = true, Token = "" };
-            }
-            catch (Exception e)
-            {
-                return new PublishDeltaResult { Success = false, Error = e.Message };
-            }
-        } */
 
-        private async Task UploadToSTFP(string json)
+        /*  public async Task<PublishDeltaResult> PublishProductDeltas(ProcessedProductFeed products)
+         {
+             try
+             {
+                 var prods = JSONSerialization.SerializeToJSON(products);
+                 await UploadToSTFP(prods);
+                 return new PublishDeltaResult { Success = true, Token = "" };
+             }
+             catch (Exception e)
+             {
+                 return new PublishDeltaResult { Success = false, Error = e.Message };
+             }
+         } */
+
+        private async Task UploadToSTFP(string json, string endpoint)
         {
-            var connectionInfo = new ConnectionInfo("localhost", 2222,
+            var connectionInfo = new ConnectionInfo(endpoint, 2222,
                                                    this.accessKey,
                                                    new[] { new PasswordAuthenticationMethod(this.accessKey, this.secretKey) });
             using (var client = new SftpClient(connectionInfo))
@@ -69,6 +70,6 @@ namespace PureClarity.Managers
             }
         }
 
-        
+
     }
 }
