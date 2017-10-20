@@ -38,6 +38,20 @@ namespace PureClarity.Managers
                 return new PublishFeedResult { Success = false, Error = e.Message };
             }
         }
+        
+       /*  public async Task<PublishDeltaResult> PublishProductDeltas(ProcessedProductFeed products)
+        {
+            try
+            {
+                var prods = JSONSerialization.SerializeToJSON(products);
+                await UploadToSTFP(prods);
+                return new PublishDeltaResult { Success = true, Token = "" };
+            }
+            catch (Exception e)
+            {
+                return new PublishDeltaResult { Success = false, Error = e.Message };
+            }
+        } */
 
         private async Task UploadToSTFP(string json)
         {
