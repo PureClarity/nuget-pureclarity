@@ -86,13 +86,13 @@ namespace PureClarity.Managers
         {
             var validationResult = new FeedValidationResult();
             validationResult.ProductValidationResult = _productCollection.Validate();
-            //validationResult.CategoryValidationResult = _categoryCollection.Validate();
-            /* validationResult.BrandValidationResult = _brandCollection.Validate();
-            validationResult.UserValidationResult = _userCollection.Validate(); */
-            validationResult.Success = validationResult.ProductValidationResult.Success;
-            //&& validationResult.CategoryValidationResult.Success;
-            /* && validationResult.BrandValidationResult.Success;
-            && validationResult.UserValidationResult.Success; */
+            validationResult.CategoryValidationResult = _categoryCollection.Validate();
+            //validationResult.BrandValidationResult = _brandCollection.Validate();
+            validationResult.UserValidationResult = _userCollection.Validate(); 
+            validationResult.Success = validationResult.ProductValidationResult.Success
+            && validationResult.CategoryValidationResult.Success
+            //&& validationResult.BrandValidationResult.Success;
+            && validationResult.UserValidationResult.Success;
 
             return validationResult;
         }
@@ -117,6 +117,14 @@ namespace PureClarity.Managers
                 publishResult.PublishCategoryFeedResult = publishManager.PublishCategoryFeed(_categoryCollection.GetItems()).Result;
             }
 
+            if (_userCollection.GetCollectionState().ItemCount != 0)
+            {
+                publishResult.PublishUserFeedResult = publishManager.PublishUserFeed(_userCollection.GetItems()).Result;
+            }
+
+            publishResult.Success = (publishResult.PublishProductFeedResult?.Success ?? true)
+                                    && (publishResult.PublishCategoryFeedResult?.Success ?? true)
+                                    && (publishResult.PublishUserFeedResult?.Success ?? true);
 
             return publishResult;
         }
@@ -137,7 +145,14 @@ namespace PureClarity.Managers
                 publishResult.PublishCategoryFeedResult = await publishManager.PublishCategoryFeed(_categoryCollection.GetItems());
             }
 
-            publishResult.Success = (publishResult.PublishProductFeedResult?.Success ?? true) && (publishResult.PublishCategoryFeedResult?.Success ?? true);
+            if (_userCollection.GetCollectionState().ItemCount != 0)
+            {
+                publishResult.PublishUserFeedResult = await publishManager.PublishUserFeed(_userCollection.GetItems());
+            }
+
+            publishResult.Success = (publishResult.PublishProductFeedResult?.Success ?? true)
+                                    && (publishResult.PublishCategoryFeedResult?.Success ?? true)
+                                    && (publishResult.PublishUserFeedResult?.Success ?? true);
 
             return publishResult;
         }

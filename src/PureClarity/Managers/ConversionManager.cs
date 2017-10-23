@@ -34,8 +34,40 @@ namespace PureClarity.Managers
             return ComposeDeltas.GenerateDeltas(processedProducts, accessKey);
         }
 
-        public static ProcessedCategoryFeed ProcessCategories(IEnumerable<Category> preProcessCategories){
+        public static ProcessedCategoryFeed ProcessCategories(IEnumerable<Category> preProcessCategories)
+        {
             return new ProcessedCategoryFeed { Categories = preProcessCategories.ToArray() };
+        }
+
+        public static ProcessedUserFeed ProcessUsers(IEnumerable<User> preProcessUsers)
+        {
+            var processedUsers = preProcessUsers.Select((user) =>
+            {
+                var processedUser = new ProcessedUser
+                {
+                    City = user.City,
+                    Country = user.Country,
+                    DOB = user.DOB,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    Gender = user.Gender,
+                    LastName = user.LastName,
+                    Salutation = user.Salutation,
+                    State = user.State,
+                    UserId = user.UserId
+                };
+
+                var customFields = new Dictionary<string, JToken>();
+                foreach (var customField in user.CustomFields)
+                {
+                    var values = customField.Value.Select((value) => { return WebUtility.HtmlEncode(value); });
+                    customFields.Add(WebUtility.HtmlEncode(customField.Key), new JArray(values));
+                }
+
+                processedUser.CustomFields = customFields;
+                return processedUser;
+            });
+            return new ProcessedUserFeed { Users = processedUsers.ToArray() };
         }
 
         private static ProcessedProduct ConvertProduct(Product product)

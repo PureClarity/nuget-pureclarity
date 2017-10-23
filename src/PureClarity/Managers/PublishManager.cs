@@ -103,6 +103,22 @@ namespace PureClarity.Managers
             }
         }
 
+        public async Task<PublishFeedResult> PublishUserFeed(IEnumerable<User> users)
+        {
+            try
+            {
+                var userFeed = ConversionManager.ProcessUsers(users);
+                var feedJSON = JSONSerialization.SerializeToJSON(userFeed);
+                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                await UploadToSTFP(feedJSON, endpoint.SFTPEndpoint);
+                return new PublishFeedResult { Success = true, Token = "" };
+            }
+            catch (Exception e)
+            {
+                return new PublishFeedResult { Success = false, Error = e.Message };
+            }
+        }
+
         private async Task UploadToSTFP(string json, string endpoint)
         {
             var connectionInfo = new ConnectionInfo(endpoint, 2222,
