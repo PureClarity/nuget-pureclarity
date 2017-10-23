@@ -106,12 +106,17 @@ namespace PureClarity.Managers
             var publishManager = new PublishManager(_accessKey, _secretKey, _region);
             var publishResult = new PublishResult();
 
-            if (!_productsPushed)
+            if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
             {
-                var publishProducts = publishManager.PublishProductFeed(_productCollection.GetItems()).Result;
-                publishResult.PublishProductFeedResult = publishProducts;
+                publishResult.PublishProductFeedResult = publishManager.PublishProductFeed(_productCollection.GetItems()).Result;
                 _productsPushed = true;
             }
+
+            if (_categoryCollection.GetCollectionState().ItemCount != 0)
+            {
+                publishResult.PublishCategoryFeedResult = publishManager.PublishCategoryFeed(_categoryCollection.GetItems()).Result;
+            }
+
 
             return publishResult;
         }
@@ -121,15 +126,18 @@ namespace PureClarity.Managers
             var publishManager = new PublishManager(_accessKey, _secretKey, _region);
             var publishResult = new PublishResult();
 
-            if (!_productsPushed)
+            if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
             {
-                var publishProducts = publishManager.PublishProductFeed(_productCollection.GetItems());
-                await Task.WhenAll(publishProducts);
-                publishResult.PublishProductFeedResult = await publishProducts;
+                publishResult.PublishProductFeedResult = await publishManager.PublishProductFeed(_productCollection.GetItems());
                 _productsPushed = true;
             }
 
-            publishResult.Success = publishResult.PublishProductFeedResult.Success;
+            if (_categoryCollection.GetCollectionState().ItemCount != 0)
+            {
+                publishResult.PublishCategoryFeedResult = await publishManager.PublishCategoryFeed(_categoryCollection.GetItems());
+            }
+
+            publishResult.Success = (publishResult.PublishProductFeedResult?.Success ?? true) && (publishResult.PublishCategoryFeedResult?.Success ?? true);
 
             return publishResult;
         }

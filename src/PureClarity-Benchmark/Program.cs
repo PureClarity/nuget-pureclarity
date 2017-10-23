@@ -17,19 +17,23 @@ namespace PureClarity_Benchmark
 
     [MemoryDiagnoser]
     [SimpleJob(RunStrategy.Monitoring)]
-    public class ProductFeed
+    public class Feeds
     {
         [Params(1000, 5000, 10000, 25000, 50000, 100000)]
-        public static int _prodCount;
+        public static int _itemCount;
 
         private static ConcurrentBag<Product> _products;
+        private static ConcurrentBag<Category> _categories;
 
         [GlobalSetup]
         public static void GlobalSetup()
         {
             _products = new ConcurrentBag<Product>();
-            System.Threading.Tasks.Parallel.For(0, _prodCount, (val) =>
+            _categories = new ConcurrentBag<Category>();
+
+            System.Threading.Tasks.Parallel.For(0, _itemCount, (val) =>
              {
+                 //Create fake products
                  var testProduct = new Faker<Product>()
                                     .CustomInstantiator(f => new Product(Guid.NewGuid().ToString(),
                                     f.Commerce.ProductName(),
@@ -39,6 +43,15 @@ namespace PureClarity_Benchmark
                                     f.Commerce.Categories(3).ToList()));
 
                  _products.Add(testProduct);
+
+
+                 //Create fake categories
+                 var testCategory = new Faker<Category>()
+                                     .CustomInstantiator(f => new Category(Guid.NewGuid().ToString(),
+                                     f.Commerce.Categories(1)[0],
+                                     f.Internet.Url()));
+
+                 _categories.Add(testCategory);
              });
 
             _products.AsParallel().ForAll((prod) =>
@@ -50,7 +63,22 @@ namespace PureClarity_Benchmark
                 prod.Attributes.Add("Material", attrs.Generate());
             });
 
-            Console.WriteLine(_products.Count());
+            var parentCats = new ConcurrentBag<string>();
+
+            _categories.AsParallel().ForAll((cat) =>
+            {
+                if (parentCats.Count() < 20)
+                {
+                    parentCats.Add(cat.Id);
+                }
+                else
+                {
+                    var parents = new Faker<IEnumerable<string>>().CustomInstantiator(f => new List<string> { f.PickRandom(parentCats.ToList()) });
+                    cat.ParentIds = parents.Generate().ToArray();
+                }
+            });
+
+            Console.WriteLine($"{_products.Count()}, {_categories.Count()}");
         }
 
         [Benchmark]
@@ -88,6 +116,16 @@ namespace PureClarity_Benchmark
             Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishProductFeedResult.Error}");
         }
 
+        [Benchmark]
+        public static void RunCategoryFeed()
+        {
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            feedManager.AddCategories(_categories);
+            feedManager.Validate();
+            var publishResult = feedManager.PublishAsync().Result;
+            Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishCategoryFeedResult.Error}");
+        }
+
         private static string GetFirstError(ValidatorResult validatorResult)
         {
             return validatorResult.InvalidRecords.Count != 0 ? validatorResult.InvalidRecords.First().Value.First() : String.Empty;
@@ -99,19 +137,11 @@ namespace PureClarity_Benchmark
     {
         static void Main(string[] args)
         {
-            ProductFeed._prodCount = 1000;
-            ProductFeed.GlobalSetup();
-            ProductFeed.RunProductDeltas();
-            //ProductFeed.RunProductFeed();
-            //var summary = BenchmarkRunner.Run<ProductFeed>();
-            /* var connectionInfo = new ConnectionInfo("localhost", 2222,
-                                                    "7ad2d0bb-6c44-4a93-a146-6c8ed845860b",
-                                                    new[] { new PasswordAuthenticationMethod("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST") });
-            using (var client = new SshClient(connectionInfo))
-            {
-                client.Connect();
-                Console.WriteLine(client.ConnectionInfo.ServerVersion);
-            } */
+            Feeds._itemCount = 1000;
+            Feeds.GlobalSetup();
+            
+            //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
+            var summary = BenchmarkRunner.Run<Feeds>();
         }
     }
 }
