@@ -23,6 +23,7 @@ namespace PureClarity_Benchmark
         public static int _itemCount;
 
         private static ConcurrentBag<Product> _products;
+        private static ConcurrentBag<string> _deletedProducts;
         private static ConcurrentBag<Category> _categories;
         private static ConcurrentBag<User> _users;
 
@@ -30,6 +31,7 @@ namespace PureClarity_Benchmark
         public static void GlobalSetup()
         {
             _products = new ConcurrentBag<Product>();
+            _deletedProducts = new ConcurrentBag<string>();
             _categories = new ConcurrentBag<Category>();
             _users = new ConcurrentBag<User>();
 
@@ -45,6 +47,12 @@ namespace PureClarity_Benchmark
                                     f.Commerce.Categories(3).ToList()));
 
                  _products.Add(testProduct);
+
+                 //Fake deleted products
+                 var testDeletedProduct = new Faker<string>()
+                                    .CustomInstantiator(f => Guid.NewGuid().ToString());
+
+                 _deletedProducts.Add(testDeletedProduct);
 
 
                  //Create fake categories
@@ -110,6 +118,7 @@ namespace PureClarity_Benchmark
         {
             var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
             feedManager.AddProducts(_products);
+            feedManager.AddDeletedProductSkus(_deletedProducts);
             feedManager.Validate();
             var publishResult = feedManager.PublishDeltasAsync().Result;
             Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.Errors.Count}");
@@ -163,9 +172,10 @@ namespace PureClarity_Benchmark
         {
             Feeds._itemCount = 1000;
             Feeds.GlobalSetup();
-            
-            //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
-            var summary = BenchmarkRunner.Run<Feeds>();
+            Feeds.RunProductDeltas();
+
+            /* //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
+            var summary = BenchmarkRunner.Run<Feeds>(); */
         }
     }
 }

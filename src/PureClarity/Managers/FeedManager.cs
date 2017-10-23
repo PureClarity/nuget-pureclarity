@@ -164,7 +164,7 @@ namespace PureClarity.Managers
 
             if (!_productsPushed)
             {
-                var publishProductDeltas = publishManager.PublishProductDeltas(_productCollection.GetItems(), _accessKey).Result;
+                var publishProductDeltas = publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accessKey).Result;
                 publishResult = publishProductDeltas;
                 _productsPushed = true;
             }
@@ -179,7 +179,7 @@ namespace PureClarity.Managers
 
             if (!_productsPushed)
             {
-                publishResult = await publishManager.PublishProductDeltas(_productCollection.GetItems(), _accessKey);
+                publishResult = await publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accessKey);
                 _productsPushed = true;
             }
 
