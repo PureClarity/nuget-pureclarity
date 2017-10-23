@@ -189,10 +189,9 @@ namespace PureClarity_Benchmark
         {
             Feeds._itemCount = 1000;
             Feeds.GlobalSetup();
-            QueryToken.RunQueryTokens();
 
-            /* //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
-            var summary = BenchmarkRunner.Run<Feeds>(); */
+            //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
+            var summary = BenchmarkRunner.Run<Feeds>();
         }
     }
 }
