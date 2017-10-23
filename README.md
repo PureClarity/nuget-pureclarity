@@ -1,5 +1,5 @@
 # nuget-pureclarity
-The PureClarity SDK .Net Standard repo.
+The PureClarity SDK .Net Standard repo. Built to target .Net Standard 1.3. [Click here for more information on .Net Standard.](https://github.com/dotnet/standard/blob/master/docs/versions.md)
 
 # API
 
@@ -8,9 +8,9 @@ The PureClarity SDK .Net Standard repo.
 
 ### FeedManager Constructor
 
-**`new FeedManager(EndpointURL, AccessKey, SecretKey)`**
+**`new FeedManager(AccessKey, SecretKey, Region)`**
 
-Sets the endpoint URL, Access Key and Secret Key to use when making calls to PureClarity
+Sets the Access Key, Secret Key and Region (which determines endpoints) to use when making calls to PureClarity
 
 
 ### Add Product(s)
@@ -19,7 +19,7 @@ Sets the endpoint URL, Access Key and Secret Key to use when making calls to Pur
 
 **`IEnumerable<AddItemResult> AddProducts(Products)`**
 
-Adds a product (or products) that you wish to send to PureClarity in a feed to an internal collection. If a product with the same Sku has already been added then the AddItemResult will return with Success: false and an error.
+Adds a product (or products) that you wish to send to PureClarity in a feed to an internal collection. If a product with the same Sku has already been added then the AddItemResult will return with Success: false and an error. Items with a ParentId will be treated as a variant and added to the parent products Variant list. If a variant is added before its parent product then it will be added to the parent product when the parent product is added to the collection.
 
 
 ### Remove Product(s)
@@ -95,3 +95,19 @@ Validates the feed and returns a validation response. The validation response co
 
 Publishes validated feeds to the PureClarity SFTP server and returns the publish result.
 
+
+## Tokens
+
+### Query Token
+
+**`QueryTokensResult QueryTokens(AccessKey, Tokens)`**
+
+Queries the status of the product deltas based on the tokens returned when they were published.
+
+Deltas can be in the following states:
+
+* 0: Pending  - 	The delta has not been processed yet.
+* 1: Success  -	 The delta was applied successfully.
+* 2: Error	   -  The delta failed. 
+
+If a delta failed then the reason will also be provided.
