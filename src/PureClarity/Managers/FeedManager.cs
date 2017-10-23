@@ -10,7 +10,6 @@ namespace PureClarity.Managers
     public class FeedManager
     {
         private int _region;
-        private string _endpoint;
         private string _accessKey;
         private string _secretKey;
 
@@ -20,10 +19,11 @@ namespace PureClarity.Managers
         private BrandCollection _brandCollection;
         private UserCollection _userCollection;
 
+        private bool _productsPushed;
 
-        public FeedManager(string endpointUrl, string accessKey, string secretKey, int region)
+
+        public FeedManager(string accessKey, string secretKey, int region)
         {
-            _endpoint = endpointUrl ?? throw new System.ArgumentNullException(nameof(endpointUrl));
             _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
             _secretKey = secretKey ?? throw new System.ArgumentNullException(nameof(secretKey));
             _region = region;
@@ -86,12 +86,12 @@ namespace PureClarity.Managers
         {
             var validationResult = new FeedValidationResult();
             validationResult.ProductValidationResult = _productCollection.Validate();
-            /* validationResult.CategoryValidationResult = _categoryCollection.Validate();
-            validationResult.BrandValidationResult = _brandCollection.Validate();
+            //validationResult.CategoryValidationResult = _categoryCollection.Validate();
+            /* validationResult.BrandValidationResult = _brandCollection.Validate();
             validationResult.UserValidationResult = _userCollection.Validate(); */
             validationResult.Success = validationResult.ProductValidationResult.Success;
-            /* && validationResult.CategoryValidationResult.Success
-            && validationResult.BrandValidationResult.Success
+            //&& validationResult.CategoryValidationResult.Success;
+            /* && validationResult.BrandValidationResult.Success;
             && validationResult.UserValidationResult.Success; */
 
             return validationResult;
@@ -101,16 +101,69 @@ namespace PureClarity.Managers
 
         #region Publish
 
-        public async Task<PublishFeedResult> Publish()
+        public PublishResult Publish()
         {
-            var feed = ConversionManager.ProcessProductFeed(_productCollection.GetItems());
-            var publishManager = new PublishManager(_accessKey,_secretKey, _region);
-            var publishProducts = publishManager.PublishProductFeed(feed);
+            var publishManager = new PublishManager(_accessKey, _secretKey, _region);
+            var publishResult = new PublishResult();
 
-            await Task.WhenAll(publishProducts);
+            if (!_productsPushed)
+            {
+                var publishProducts = publishManager.PublishProductFeed(_productCollection.GetItems()).Result;
+                publishResult.PublishProductFeedResult = publishProducts;
+                _productsPushed = true;
+            }
 
-            return await publishProducts;
+            return publishResult;
         }
+
+        public async Task<PublishResult> PublishAsync()
+        {
+            var publishManager = new PublishManager(_accessKey, _secretKey, _region);
+            var publishResult = new PublishResult();
+
+            if (!_productsPushed)
+            {
+                var publishProducts = publishManager.PublishProductFeed(_productCollection.GetItems());
+                await Task.WhenAll(publishProducts);
+                publishResult.PublishProductFeedResult = await publishProducts;
+                _productsPushed = true;
+            }
+
+            publishResult.Success = publishResult.PublishProductFeedResult.Success;
+
+            return publishResult;
+        }
+
+        public PublishDeltaResult PublishDeltas()
+        {
+            var publishManager = new PublishManager(_accessKey, _secretKey, _region);
+            var publishResult = new PublishDeltaResult();
+
+            if (!_productsPushed)
+            {
+                var publishProductDeltas = publishManager.PublishProductDeltas(_productCollection.GetItems(), _accessKey).Result;
+                publishResult = publishProductDeltas;
+                _productsPushed = true;
+            }
+
+            return publishResult;
+        }
+
+        public async Task<PublishDeltaResult> PublishDeltasAsync()
+        {
+            var publishManager = new PublishManager(_accessKey, _secretKey, _region);
+            var publishResult = new PublishDeltaResult();
+
+            if (!_productsPushed)
+            {
+                publishResult = await publishManager.PublishProductDeltas(_productCollection.GetItems(), _accessKey);
+                _productsPushed = true;
+            }
+
+            return publishResult;
+        }
+
+
 
         #endregion
 

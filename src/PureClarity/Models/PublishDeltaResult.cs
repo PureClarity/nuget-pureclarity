@@ -4,7 +4,12 @@ namespace PureClarity.Models
 {
     public class PublishDeltaResult : PCResultBase
     {
-        public IEnumerable<string> Tokens;
-        public IEnumerable<PublishDeltaError> Errors;
+        public List<string> Tokens;
+        public List<PublishDeltaError> Errors;
+
+        public PublishDeltaResult(){
+            Tokens = new List<string>();
+            Errors = new List<PublishDeltaError>();
+        }
     }
 }

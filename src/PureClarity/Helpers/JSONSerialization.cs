@@ -11,11 +11,11 @@ namespace PureClarity.Helpers
             return JsonConvert.SerializeObject(objectToSerialize, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 
-        public static T DeserializeJSONFromHttpResponse<T>(Task<HttpResponseMessage> response)
+        public static async Task<T> DeserializeJSONFromHttpResponse<T>(HttpResponseMessage response)
         {
             T result;
 
-            string s = response.Result.Content.ReadAsStringAsync().Result;
+            string s = await response.Content.ReadAsStringAsync();
 
             result = JsonConvert.DeserializeObject<T>(s.ToString());
 
