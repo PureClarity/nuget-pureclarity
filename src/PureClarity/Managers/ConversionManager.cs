@@ -4,6 +4,7 @@ using System.Net;
 using Newtonsoft.Json.Linq;
 using PureClarity.Helpers;
 using PureClarity.Models;
+using PureClarity.Models.Processed;
 
 namespace PureClarity.Managers
 {
@@ -31,6 +32,10 @@ namespace PureClarity.Managers
             }
 
             return ComposeDeltas.GenerateDeltas(processedProducts, accessKey);
+        }
+
+        public static ProcessedCategoryFeed ProcessCategories(IEnumerable<Category> preProcessCategories){
+            return new ProcessedCategoryFeed { Categories = preProcessCategories.ToArray() };
         }
 
         private static ProcessedProduct ConvertProduct(Product product)
