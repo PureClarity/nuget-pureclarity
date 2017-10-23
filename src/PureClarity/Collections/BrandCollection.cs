@@ -9,7 +9,7 @@ namespace PureClarity.Collections
 {
     public class BrandCollection : PCCollection<Brand>
     {
-        public override ValidatorResult Validate()
+        public override ValidationResult Validate()
         {
             throw new NotImplementedException();
         }

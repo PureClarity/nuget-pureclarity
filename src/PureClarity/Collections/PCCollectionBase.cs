@@ -73,7 +73,7 @@ namespace PureClarity.Collections
             return _items.Select((itemKVP) => itemKVP.Value);
         }
 
-        public abstract ValidatorResult Validate();
+        public abstract ValidationResult Validate();
 
         /// <summary>
         /// Gets useful information on the internal state of the collection

@@ -126,7 +126,7 @@ namespace PureClarity_Benchmark
             Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishCategoryFeedResult.Error}");
         }
 
-        private static string GetFirstError(ValidatorResult validatorResult)
+        private static string GetFirstError(PureClarity.Models.ValidationResult validatorResult)
         {
             return validatorResult.InvalidRecords.Count != 0 ? validatorResult.InvalidRecords.First().Value.First() : String.Empty;
         }
