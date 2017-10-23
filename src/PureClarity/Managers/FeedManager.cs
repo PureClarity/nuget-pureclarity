@@ -10,7 +10,6 @@ namespace PureClarity.Managers
     public class FeedManager
     {
         private int _region;
-        private string _endpoint;
         private string _accessKey;
         private string _secretKey;
 
@@ -23,9 +22,8 @@ namespace PureClarity.Managers
         private bool _productsPushed;
 
 
-        public FeedManager(string endpointUrl, string accessKey, string secretKey, int region)
+        public FeedManager(string accessKey, string secretKey, int region)
         {
-            _endpoint = endpointUrl ?? throw new System.ArgumentNullException(nameof(endpointUrl));
             _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
             _secretKey = secretKey ?? throw new System.ArgumentNullException(nameof(secretKey));
             _region = region;
@@ -88,12 +86,12 @@ namespace PureClarity.Managers
         {
             var validationResult = new FeedValidationResult();
             validationResult.ProductValidationResult = _productCollection.Validate();
-            /* validationResult.CategoryValidationResult = _categoryCollection.Validate();
-            validationResult.BrandValidationResult = _brandCollection.Validate();
+            //validationResult.CategoryValidationResult = _categoryCollection.Validate();
+            /* validationResult.BrandValidationResult = _brandCollection.Validate();
             validationResult.UserValidationResult = _userCollection.Validate(); */
             validationResult.Success = validationResult.ProductValidationResult.Success;
-            /* && validationResult.CategoryValidationResult.Success
-            && validationResult.BrandValidationResult.Success
+            //&& validationResult.CategoryValidationResult.Success;
+            /* && validationResult.BrandValidationResult.Success;
             && validationResult.UserValidationResult.Success; */
 
             return validationResult;
@@ -130,6 +128,8 @@ namespace PureClarity.Managers
                 publishResult.PublishProductFeedResult = await publishProducts;
                 _productsPushed = true;
             }
+
+            publishResult.Success = publishResult.PublishProductFeedResult.Success;
 
             return publishResult;
         }

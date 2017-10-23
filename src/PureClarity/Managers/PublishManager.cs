@@ -19,6 +19,7 @@ namespace PureClarity.Managers
         private readonly string secretKey;
         private readonly int region;
         private readonly string dateFormat = "yyyyMdHHmmss";
+        private readonly string deltaEndpointSuffix = "/api/productdelta";
 
         public PublishManager(string accessKey, string secretKey, int region)
         {
@@ -46,6 +47,9 @@ namespace PureClarity.Managers
         public async Task<PublishDeltaResult> PublishProductDeltas(IEnumerable<Product> products, string accessKey)
         {
             var deltas = new List<ProcessedProductDelta>();
+            var publishDeltaResult = new PublishDeltaResult();
+            var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+            var fullEndpoint = $"{endpoint.APIEndpoint}{deltaEndpointSuffix}";
 
             try
             {
@@ -65,25 +69,22 @@ namespace PureClarity.Managers
                 };
             }
 
-            /* var restnew PublishDeltaResult { Success = false, };
-
             foreach (var delta in deltas)
             {
                 try
                 {
-                    var prods = JSONSerialization.SerializeToJSON(products);
-                    //await UploadToSTFP(prods);
+                    var json = JSONSerialization.SerializeToJSON(delta);
+                    var deltaResult = await HttpCalls.Post<DeltaResult>(json, fullEndpoint);
+                    publishDeltaResult.Tokens.Add(deltaResult.Token);
                 }
                 catch (Exception e)
                 {
-                    return
+                    publishDeltaResult.Errors.Add(new PublishDeltaError { Error = e.Message, Skus = delta.Products.Select((prod) => prod.Sku) });
                 }
+            }
 
-            } */
-
-
-
-            // return new PublishDeltaResult { Success = true, Token = "" };
+            publishDeltaResult.Success = publishDeltaResult.Errors.Count == 0;
+            return publishDeltaResult;
         }
 
         private async Task UploadToSTFP(string json, string endpoint)
@@ -100,11 +101,6 @@ namespace PureClarity.Managers
                     await client.UploadAsync(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json");
                 }
             }
-        }
-
-        private async Task UploadDelta(string json, string endpoint)
-        {
-            var returnedToken = HttpCalls.Post<DeltaResult>(json, endpoint);
         }
     }
 }

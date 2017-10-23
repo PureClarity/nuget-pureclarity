@@ -3,12 +3,14 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using PureClarity.Models.Response;
 
 namespace PureClarity.Helpers
 {
     public class HttpCalls
     {
-        public static T Post<T>(string bodyToPost, string postUrl)
+        public static async Task<T> Post<T>(string bodyToPost, string postUrl)
         {
             using (var httpClient = new HttpClient())
             {
@@ -17,23 +19,22 @@ namespace PureClarity.Helpers
                 httpClient.Timeout = new TimeSpan(0, 0, 150);
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var content = new StringContent(bodyToPost, Encoding.UTF8, "application/json");
-                var response = httpClient.PostAsync(postUrl, content, new CancellationToken(false));
+                var response = await httpClient.PostAsync(postUrl, content);
 
-                if (response.Result.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    result = JSONSerialization.DeserializeJSONFromHttpResponse<T>(response);
+                    result = await JSONSerialization.DeserializeJSONFromHttpResponse<T>(response);
                 }
                 else
                 {
-
-                    //throw new Exception(string.Format("Request failure for object {0}: Status {1} returned for {2} with payload {3}", typeof(T), response.Result.StatusCode, postUrl, bodyToPost));
+                    throw new Exception($"Request failure for object {typeof(T)}: POST Status {response.StatusCode} returned for {postUrl} with payload {bodyToPost}");
                 }
 
                 return result;
             }
         }
 
-        public static T Get<T>(string getUrl, string queryString)
+        public static async Task<T> Get<T>(string getUrl, string queryString)
         {
             using (var httpClient = new HttpClient())
             {
@@ -42,15 +43,15 @@ namespace PureClarity.Helpers
                 httpClient.Timeout = new TimeSpan(0, 0, 150);
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var response = httpClient.GetAsync(getUrl + queryString, new CancellationToken(false));
+                var response = await httpClient.GetAsync(getUrl + queryString);
 
-                if (response.Result.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    result = JSONSerialization.DeserializeJSONFromHttpResponse<T>(response);
+                    result = await JSONSerialization.DeserializeJSONFromHttpResponse<T>(response);
                 }
                 else
                 {
-
+                    throw new Exception($"Request failure for object {typeof(T)}: GET Status {response.StatusCode} returned for {getUrl} with query string {queryString}");
                 }
 
                 return result;

@@ -20,7 +20,7 @@ namespace PureClarity.Helpers
                 validDeltas.Clear();
                 var productPartitions = Partition(processedProducts, productsPerDelta);
 
-                deltasValid = !productPartitions.Any((partition) =>
+                deltasValid = productPartitions.All((partition) =>
                 {
                     var feed = new ProcessedProductDelta(appKey);
                     feed.Products = partition.ToArray();

@@ -1,6 +1,6 @@
 namespace PureClarity.Models.Response
 {
-    public class DeltaResult
+    public class DeltaResult: HttpResponse
     {
         public string Token;
     }
