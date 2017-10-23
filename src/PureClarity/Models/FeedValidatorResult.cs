@@ -4,9 +4,9 @@ namespace PureClarity.Models
 {
     public class FeedValidationResult : PCResultBase
     {
-        public ValidatorResult ProductValidationResult;
-        public ValidatorResult CategoryValidationResult;
-        public ValidatorResult BrandValidationResult;
-        public ValidatorResult UserValidationResult;
+        public ValidationResult ProductValidationResult;
+        public ValidationResult CategoryValidationResult;
+        public ValidationResult BrandValidationResult;
+        public ValidationResult UserValidationResult;
     }
 }

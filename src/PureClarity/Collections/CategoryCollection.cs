@@ -9,9 +9,9 @@ namespace PureClarity.Collections
 {
     public class CategoryCollection : PCCollection<Category>
     {
-        public override ValidatorResult Validate()
+        public override ValidationResult Validate()
         {
-            return new ValidatorResult { Success = true };
+            return new ValidationResult { Success = true };
         }
     }
 }

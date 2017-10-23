@@ -24,12 +24,14 @@ namespace PureClarity_Benchmark
 
         private static ConcurrentBag<Product> _products;
         private static ConcurrentBag<Category> _categories;
+        private static ConcurrentBag<User> _users;
 
         [GlobalSetup]
         public static void GlobalSetup()
         {
             _products = new ConcurrentBag<Product>();
             _categories = new ConcurrentBag<Category>();
+            _users = new ConcurrentBag<User>();
 
             System.Threading.Tasks.Parallel.For(0, _itemCount, (val) =>
              {
@@ -52,6 +54,18 @@ namespace PureClarity_Benchmark
                                      f.Internet.Url()));
 
                  _categories.Add(testCategory);
+
+                 //Create fake categories
+                 var testUser = new Faker<User>()
+                                     .CustomInstantiator(f => new User(Guid.NewGuid().ToString()))
+                                     .RuleFor(u => u.City, f => f.Address.City())
+                                     .RuleFor(u => u.Country, f => f.Address.CountryCode())
+                                     .RuleFor(u => u.DOB, f => DateTime.Now.ToString("dd/MM/yyyy"))
+                                     .RuleFor(u => u.Email, f => f.Person.Email)
+                                     .RuleFor(u => u.FirstName, f => f.Person.FirstName)
+                                     .RuleFor(u => u.LastName, f => f.Person.LastName);
+
+                 _users.Add(testUser);
              });
 
             _products.AsParallel().ForAll((prod) =>
@@ -66,17 +80,17 @@ namespace PureClarity_Benchmark
             var parentCats = new ConcurrentBag<string>();
 
             _categories.AsParallel().ForAll((cat) =>
-            {
-                if (parentCats.Count() < 20)
                 {
-                    parentCats.Add(cat.Id);
-                }
-                else
-                {
-                    var parents = new Faker<IEnumerable<string>>().CustomInstantiator(f => new List<string> { f.PickRandom(parentCats.ToList()) });
-                    cat.ParentIds = parents.Generate().ToArray();
-                }
-            });
+                    if (parentCats.Count() < 20)
+                    {
+                        parentCats.Add(cat.Id);
+                    }
+                    else
+                    {
+                        var parents = new Faker<IEnumerable<string>>().CustomInstantiator(f => new List<string> { f.PickRandom(parentCats.ToList()) });
+                        cat.ParentIds = parents.Generate().ToArray();
+                    }
+                });
 
             Console.WriteLine($"{_products.Count()}, {_categories.Count()}");
         }
@@ -126,7 +140,17 @@ namespace PureClarity_Benchmark
             Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishCategoryFeedResult.Error}");
         }
 
-        private static string GetFirstError(ValidatorResult validatorResult)
+        [Benchmark]
+        public static void RunUserFeed()
+        {
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            feedManager.AddUsers(_users);
+            feedManager.Validate();
+            var publishResult = feedManager.PublishAsync().Result;
+            Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishUserFeedResult.Error}");
+        }
+
+        private static string GetFirstError(PureClarity.Models.ValidationResult validatorResult)
         {
             return validatorResult.InvalidRecords.Count != 0 ? validatorResult.InvalidRecords.First().Value.First() : String.Empty;
         }

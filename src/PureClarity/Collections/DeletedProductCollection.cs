@@ -9,7 +9,7 @@ namespace PureClarity.Collections
 {
     public class DeletedProductCollection : PCCollection<DeletedProductSku>
     {
-        public override ValidatorResult Validate()
+        public override ValidationResult Validate()
         {
             throw new NotImplementedException();
         }

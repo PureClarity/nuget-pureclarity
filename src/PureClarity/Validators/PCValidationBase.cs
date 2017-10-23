@@ -12,9 +12,9 @@ namespace PureClarity.Validators
             InvalidRecords = new Dictionary<string, IEnumerable<string>>();
         }
 
-        public ValidatorResult GetValidationResult()
+        public ValidationResult GetValidationResult()
         {
-            return new ValidatorResult
+            return new ValidationResult
             {
                 Success = InvalidRecords.Count == 0,
                 InvalidRecords = InvalidRecords
