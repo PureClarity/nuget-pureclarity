@@ -165,6 +165,23 @@ namespace PureClarity_Benchmark
         }
     }
 
+    public class QueryToken
+    {
+        public static void RunQueryTokens()
+        {
+            var tokenManager = new QueryTokenManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", 0);
+            var tokenResults = tokenManager.QueryTokensAsync(new List<string>{
+                "Mhtf-R0LTASEHxHOfK0H8g",
+                "8BwrRzGYSpSduVnhqZ8weQ",
+                "_TIZzhg4TXSFn1W1YLeohw",
+                "c_HPoSnRT4O1342N8M0ivQ",
+                "2HCDBFIMT7mZjWk7L2QcCg",
+                "x273bVGbRXK6T9eHBwCdjw"
+                }).Result;
+            Console.WriteLine($"Returned: {tokenResults.TokenStatuses.Count}. Error: {tokenResults.Error}");
+        }
+    }
+
 
     class Program
     {
@@ -172,9 +189,10 @@ namespace PureClarity_Benchmark
         {
             Feeds._itemCount = 1000;
             Feeds.GlobalSetup();
+            QueryToken.RunQueryTokens();
 
-            //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
-            var summary = BenchmarkRunner.Run<Feeds>();
+            /* //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
+            var summary = BenchmarkRunner.Run<Feeds>(); */
         }
     }
 }
