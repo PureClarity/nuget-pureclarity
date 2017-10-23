@@ -8,8 +8,11 @@ using PureClarity.Models;
 
 namespace PureClarity.Models
 {
-    public class Category: PCModelBase
+    public class Category : PCModelBase
     {
+        [JsonIgnore]
+        private readonly string exceptionMessage = "is a mandatory field and must be populated";
+
         /// <summary>
         /// Unique category id. Must be unique across all categoriues
         /// </summary>
@@ -48,13 +51,30 @@ namespace PureClarity.Models
         /// Optional. A short, non-formatted description of the category. 
         /// This field should not contain any HTML
         /// </summary>
-        public string Description;        
+        public string Description;
 
 
-        public Category(string id)
+        public Category(string id, string displayName, string link)
         {
-            Id = id ?? throw new ArgumentNullException(nameof(id));
-        }        
-        
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException($"{nameof(id)} {exceptionMessage}", nameof(id));
+            }
+
+            if (string.IsNullOrEmpty(displayName))
+            {
+                throw new ArgumentException($"{nameof(displayName)} {exceptionMessage}", nameof(displayName));
+            }
+
+            if (string.IsNullOrEmpty(link))
+            {
+                throw new ArgumentException($"{nameof(link)} {exceptionMessage}", nameof(link));
+            }
+
+            Id = id;
+            DisplayName = displayName;
+            Link = link;
+        }
+
     }
 }

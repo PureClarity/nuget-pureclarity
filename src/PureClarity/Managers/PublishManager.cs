@@ -32,10 +32,10 @@ namespace PureClarity.Managers
         {
             try
             {
-                var feed = ConversionManager.ProcessProductFeed(products);
-                var prods = JSONSerialization.SerializeToJSON(feed);
+                var productFeed = ConversionManager.ProcessProductFeed(products);
+                var feedJSON = JSONSerialization.SerializeToJSON(productFeed);
                 var endpoint = RegionEndpoints.GetRegionEndpoints(region);
-                await UploadToSTFP(prods, endpoint.SFTPEndpoint);
+                await UploadToSTFP(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
             catch (Exception e)
@@ -85,6 +85,22 @@ namespace PureClarity.Managers
 
             publishDeltaResult.Success = publishDeltaResult.Errors.Count == 0;
             return publishDeltaResult;
+        }
+
+        public async Task<PublishFeedResult> PublishCategoryFeed(IEnumerable<Category> categories)
+        {
+            try
+            {
+                var categoryFeed = ConversionManager.ProcessCategories(categories);
+                var feedJSON = JSONSerialization.SerializeToJSON(categoryFeed);
+                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                await UploadToSTFP(feedJSON, endpoint.SFTPEndpoint);
+                return new PublishFeedResult { Success = true, Token = "" };
+            }
+            catch (Exception e)
+            {
+                return new PublishFeedResult { Success = false, Error = e.Message };
+            }
         }
 
         private async Task UploadToSTFP(string json, string endpoint)
