@@ -21,7 +21,7 @@ namespace PureClarity.Managers
             return feed;
         }
 
-        public static List<ProcessedProductDelta> ProcessProductDeltas(IEnumerable<Product> preProcessProducts, string accessKey)
+        public static List<ProcessedProductDelta> ProcessProductDeltas(IEnumerable<Product> preProcessProducts, IEnumerable<DeletedProductSku> deletedProducts, string accessKey)
         {
             var processedProducts = new List<ProcessedProduct>();
 
@@ -31,7 +31,7 @@ namespace PureClarity.Managers
                 processedProducts.Add(processedProduct);
             }
 
-            return ComposeDeltas.GenerateDeltas(processedProducts, accessKey);
+            return ComposeDeltas.GenerateDeltas(processedProducts, deletedProducts, accessKey);
         }
 
         public static ProcessedCategoryFeed ProcessCategories(IEnumerable<Category> preProcessCategories)

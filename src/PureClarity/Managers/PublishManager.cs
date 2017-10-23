@@ -44,7 +44,7 @@ namespace PureClarity.Managers
             }
         }
 
-        public async Task<PublishDeltaResult> PublishProductDeltas(IEnumerable<Product> products, string accessKey)
+        public async Task<PublishDeltaResult> PublishProductDeltas(IEnumerable<Product> products, IEnumerable<DeletedProductSku> deletedProducts, string accessKey)
         {
             var deltas = new List<ProcessedProductDelta>();
             var publishDeltaResult = new PublishDeltaResult();
@@ -53,7 +53,7 @@ namespace PureClarity.Managers
 
             try
             {
-                deltas = ConversionManager.ProcessProductDeltas(products, accessKey);
+                deltas = ConversionManager.ProcessProductDeltas(products, deletedProducts, accessKey);
             }
             catch (Exception e)
             {
