@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
+using PureClarity.Helpers;
 using PureClarity.Models;
 
 namespace PureClarity.Managers
@@ -17,6 +18,19 @@ namespace PureClarity.Managers
                 feed.Products.Add(processedProduct);
             }
             return feed;
+        }
+
+        public static List<ProcessedProductDelta> ProcessProductDeltas(IEnumerable<Product> preProcessProducts, string accessKey)
+        {
+            var processedProducts = new List<ProcessedProduct>();
+
+            foreach (var product in preProcessProducts)
+            {
+                ProcessedProduct processedProduct = ConvertProduct(product);
+                processedProducts.Add(processedProduct);
+            }
+
+            return ComposeDeltas.GenerateDeltas(processedProducts, accessKey);
         }
 
         private static ProcessedProduct ConvertProduct(Product product)
