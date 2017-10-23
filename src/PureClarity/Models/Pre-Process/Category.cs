@@ -56,17 +56,17 @@ namespace PureClarity.Models
 
         public Category(string id, string displayName, string link)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrWhiteSpace(id))
             {
                 throw new ArgumentException($"{nameof(id)} {exceptionMessage}", nameof(id));
             }
 
-            if (string.IsNullOrEmpty(displayName))
+            if (string.IsNullOrWhiteSpace(displayName))
             {
                 throw new ArgumentException($"{nameof(displayName)} {exceptionMessage}", nameof(displayName));
             }
 
-            if (string.IsNullOrEmpty(link))
+            if (string.IsNullOrWhiteSpace(link))
             {
                 throw new ArgumentException($"{nameof(link)} {exceptionMessage}", nameof(link));
             }
