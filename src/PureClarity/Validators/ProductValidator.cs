@@ -38,14 +38,32 @@ namespace PureClarity.Validators
         {
             foreach (var product in products)
             {
-                var priceCurrencies = product.Prices.Select((price) => { return price.Currency; });
-                if (priceCurrencies != null)
+                var productPriceCurrencies = product.Prices.Select((price) => { return price.Currency; });
+                if (productPriceCurrencies != null)
                 {
-                    foreach (var currency in priceCurrencies)
+                    foreach (var currency in productPriceCurrencies)
                     {
                         if (!Currencies.Contains(currency))
                         {
                             Currencies.Add(currency);
+                        }
+                    }
+                }
+
+                if (product.Variants.Count > 0)
+                {
+                    foreach (var variant in product.Variants)
+                    {
+                        var variantPriceCurrencies = variant.Prices.Select((price) => { return price.Currency; });
+                        if (variantPriceCurrencies != null)
+                        {
+                            foreach (var currency in variantPriceCurrencies)
+                            {
+                                if (!Currencies.Contains(currency))
+                                {
+                                    Currencies.Add(currency);
+                                }
+                            }
                         }
                     }
                 }
@@ -73,10 +91,6 @@ namespace PureClarity.Validators
         {
             var priceErrors = new List<string>();
 
-            //TODO: Check variants have prices and validate
-
-
-
             if (product.Prices.Count > 0)
             {
                 ValidateCurrencies(product.Prices, ref priceErrors, false);
@@ -86,10 +100,31 @@ namespace PureClarity.Validators
             {
                 if (product.Prices.Count == 0)
                 {
-                    priceErrors.Add("Product has no prices but has sale prices. A product must have prices to have sale prices");
+                    priceErrors.Add($"Product {product.Sku} has no prices but has sale prices. A product must have prices to have sale prices");
                 }
 
                 ValidateCurrencies(product.SalePrices, ref priceErrors, true);
+            }
+
+            if (product.Variants.Count > 0)
+            {
+                foreach (var variant in product.Variants)
+                {
+                    if (variant.Prices.Count > 0)
+                    {
+                        ValidateCurrencies(variant.Prices, ref priceErrors, false);
+                    }
+
+                    if (variant.SalePrices.Count > 0)
+                    {
+                        if (variant.Prices.Count == 0)
+                        {
+                            priceErrors.Add($"Variant {variant.Sku} has no prices but has sale prices. A variant must have prices to have sale prices");
+                        }
+
+                        ValidateCurrencies(variant.SalePrices, ref priceErrors, true);
+                    }
+                }
             }
 
 

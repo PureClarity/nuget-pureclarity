@@ -116,7 +116,8 @@ namespace PureClarity.Managers
                 SearchTags = product.SearchTags?.ToArray(),
                 Sku = product.Sku,
                 Title = product.Title,
-                AssociatedTitles = new[] { product.Title }
+                AssociatedTitles = new[] { product.Title },
+                Visibility = (int)product.Visibility
             };
 
             var associatedSkus = new List<string> { product.Sku };
@@ -132,6 +133,8 @@ namespace PureClarity.Managers
                 salePrices.AddRange(variant.SalePrices);
             }
 
+            processedProduct.AssociatedSkus = associatedSkus.ToArray();
+            processedProduct.AssociatedTitles = associatedTitles.ToArray();
             processedProduct.Prices = ProcessPrices(prices);
             processedProduct.SalePrices = ProcessPrices(salePrices);
 

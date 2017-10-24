@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using PureClarity.Models;
+using PureClarity.Models.Pre_Process;
 
 namespace PureClarity.Models
 {
@@ -106,6 +107,8 @@ namespace PureClarity.Models
         /// Products need to only define the attributes they have.
         /// </summary>
         public IDictionary<string, IEnumerable<string>> Attributes { get; set; }
+
+        public ProductVisibility Visibility = ProductVisibility.VISIBILITY_BOTH;
 
         const string MandatoryFieldMessage = "is a mandatory field";
 
