@@ -96,6 +96,8 @@ namespace PureClarity.Models
         public string[] Prices;
         public string[] SalePrices;
 
+        public int Visibility;
+
         /// <summary>
         /// Optional. Custom attributes which by default will be assumed to be facets to be used in the search results. 
         /// Products need to only define the attributes they have.

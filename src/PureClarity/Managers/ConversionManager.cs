@@ -116,7 +116,8 @@ namespace PureClarity.Managers
                 SearchTags = product.SearchTags?.ToArray(),
                 Sku = product.Sku,
                 Title = product.Title,
-                AssociatedTitles = new[] { product.Title }
+                AssociatedTitles = new[] { product.Title },
+                Visibility = (int)product.Visibility
             };
 
             var associatedSkus = new List<string> { product.Sku };

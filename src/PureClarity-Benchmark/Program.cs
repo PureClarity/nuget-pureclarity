@@ -96,13 +96,64 @@ namespace PureClarity_Benchmark
                 _users.Add(testUser);
             });
 
+            var tempTrue = false;
+            var tempTrue2 = false;
+
             _products.AsParallel().ForAll((prod) =>
             {
-                prod.Prices.Add(new Faker<Price>().CustomInstantiator(f => new Price(Decimal.Parse(f.Commerce.Price()), "GBP")));
+
 
                 var attrs = new Faker<IEnumerable<string>>().CustomInstantiator(f => new List<string> { f.Commerce.ProductMaterial(), f.Commerce.ProductMaterial(), f.Commerce.ProductMaterial() });
 
                 prod.Attributes.Add("Material", attrs.Generate());
+
+                if (!tempTrue)
+                {
+                    tempTrue = true;
+                    var testVariant = new Faker<Product>()
+                                   .CustomInstantiator(f => new Product(Guid.NewGuid().ToString(),
+                                   f.Commerce.ProductName(),
+                                   f.Lorem.Paragraph(2),
+                                   f.Internet.UrlWithPath(),
+                                   f.Internet.Avatar(),
+                                   f.Commerce.Categories(3).ToList()))
+                                   .RuleFor(u => u.Prices, f => new List<Price> { new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "GBP")), new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "GBP")), new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "USD")) });
+
+                    prod.Variants.Add(testVariant);
+                    tempTrue = false;
+                }
+                else if (!tempTrue2)
+                {
+                    tempTrue2 = true;
+                    var testVariant = new Faker<Product>()
+                                   .CustomInstantiator(f => new Product(Guid.NewGuid().ToString(),
+                                   f.Commerce.ProductName(),
+                                   f.Lorem.Paragraph(2),
+                                   f.Internet.UrlWithPath(),
+                                   f.Internet.Avatar(),
+                                   f.Commerce.Categories(3).ToList()))
+                                   .RuleFor(u => u.Prices, f => new List<Price> { new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "GBP")), new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "GBP")), new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "USD")) });
+
+                    prod.Variants.Add(testVariant);
+
+                    var testVariant2 = new Faker<Product>()
+                                   .CustomInstantiator(f => new Product(Guid.NewGuid().ToString(),
+                                   f.Commerce.ProductName(),
+                                   f.Lorem.Paragraph(2),
+                                   f.Internet.UrlWithPath(),
+                                   f.Internet.Avatar(),
+                                   f.Commerce.Categories(3).ToList()))
+                                   .RuleFor(u => u.Prices, f => new List<Price> { new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "GBP")), new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "GBP")), new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "USD")) });
+
+                    prod.Variants.Add(testVariant2);
+
+                    tempTrue2 = false;
+                }
+                else
+                {
+                    prod.Prices.Add(new Faker<Price>().CustomInstantiator(f => new Price(Decimal.Parse(f.Commerce.Price()), "GBP")));
+                    prod.Prices.Add(new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "USD")));
+                }
             });
 
             var parentCats = new ConcurrentBag<string>();
@@ -162,9 +213,14 @@ namespace PureClarity_Benchmark
                 feedManager.AddAccountPrice(accountPrice);
             });
 
-            feedManager.Validate();
-            var publishResult = feedManager.PublishAsync().Result;
-            Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishProductFeedResult.Error}");
+            var valid = feedManager.Validate();
+            if (valid.Success)
+            {
+                var publishResult = feedManager.PublishAsync().Result;
+                Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishProductFeedResult.Error}");
+            }else{
+                Console.WriteLine("Invalid feed");
+            }
         }
 
         [Benchmark]
@@ -217,9 +273,9 @@ namespace PureClarity_Benchmark
         {
             Feeds._itemCount = 1000;
             Feeds.GlobalSetup();
-            
-            //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
-            var summary = BenchmarkRunner.Run<Feeds>();
+            Feeds.RunParallelAddProductFeed();
+            /*  //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
+             var summary = BenchmarkRunner.Run<Feeds>(); */
         }
     }
 }
