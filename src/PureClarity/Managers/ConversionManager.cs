@@ -132,6 +132,8 @@ namespace PureClarity.Managers
                 salePrices.AddRange(variant.SalePrices);
             }
 
+            processedProduct.AssociatedSkus = associatedSkus.ToArray();
+            processedProduct.AssociatedTitles = associatedTitles.ToArray();
             processedProduct.Prices = ProcessPrices(prices);
             processedProduct.SalePrices = ProcessPrices(salePrices);
 
