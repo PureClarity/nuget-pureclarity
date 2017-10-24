@@ -98,8 +98,8 @@ namespace PureClarity.Models
         /// </summary>
         public List<Product> Variants;
 
-        public List<ProductPrice> Prices;
-        public List<ProductPrice> SalePrices;
+        public List<Price> Prices;
+        public List<Price> SalePrices;
 
         /// <summary>
         /// Optional. Custom attributes which by default will be assumed to be facets to be used in the search results. 
@@ -117,8 +117,8 @@ namespace PureClarity.Models
             Link = link ?? throw new ArgumentNullException(nameof(link), $"{nameof(link)} {MandatoryFieldMessage}");
             Image = image ?? throw new ArgumentNullException(nameof(image), $"{nameof(image)} {MandatoryFieldMessage}");
             Categories = categories ?? throw new ArgumentNullException(nameof(categories), $"{nameof(categories)} {MandatoryFieldMessage}");
-            Prices = new List<ProductPrice>();
-            SalePrices = new List<ProductPrice>();
+            Prices = new List<Price>();
+            SalePrices = new List<Price>();
             Variants = new List<Product>();
             Attributes = new Dictionary<string, IEnumerable<string>>();
         }

@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace PureClarity.Models
 {
-    public class ProcessedProduct
+    internal class ProcessedProduct
     {
         /// <summary>
         /// Unique product sku. Must be unique across all products

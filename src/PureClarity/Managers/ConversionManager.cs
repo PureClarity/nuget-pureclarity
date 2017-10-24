@@ -8,9 +8,9 @@ using PureClarity.Models.Processed;
 
 namespace PureClarity.Managers
 {
-    public class ConversionManager
+    internal class ConversionManager
     {
-        public static ProcessedProductFeed ProcessProductFeed(IEnumerable<Product> preProcessProducts)
+        public static ProcessedProductFeed ProcessProductFeed(IEnumerable<Product> preProcessProducts, IEnumerable<AccountPrice> accountPrices)
         {
             var feed = new ProcessedProductFeed();
             foreach (var product in preProcessProducts)
@@ -18,12 +18,20 @@ namespace PureClarity.Managers
                 ProcessedProduct processedProduct = ConvertProduct(product);
                 feed.Products.Add(processedProduct);
             }
+
+            foreach (var price in accountPrices)
+            {
+                ProcessedAccountPrice processedAccountPrice = ConvertAccountPrice(price);
+                feed.AccountPrices.Add(processedAccountPrice);
+            }
+
             return feed;
         }
 
-        public static List<ProcessedProductDelta> ProcessProductDeltas(IEnumerable<Product> preProcessProducts, IEnumerable<DeletedProductSku> deletedProducts, string accessKey)
+        public static List<ProcessedProductDelta> ProcessProductDeltas(IEnumerable<Product> preProcessProducts, IEnumerable<DeletedProductSku> deletedProducts, IEnumerable<AccountPrice> accountPrices, IEnumerable<DeletedAccountPrice> deletedAccountPrices, string accessKey)
         {
             var processedProducts = new List<ProcessedProduct>();
+            var processedAccountPrices = new List<ProcessedAccountPrice>();
 
             foreach (var product in preProcessProducts)
             {
@@ -31,7 +39,14 @@ namespace PureClarity.Managers
                 processedProducts.Add(processedProduct);
             }
 
-            return ComposeDeltas.GenerateDeltas(processedProducts, deletedProducts, accessKey);
+            foreach (var price in accountPrices)
+            {
+                ProcessedAccountPrice processedAccountPrice = ConvertAccountPrice(price);
+                processedAccountPrices.Add(processedAccountPrice);
+            }
+
+
+            return ComposeDeltas.GenerateDeltas(processedProducts, deletedProducts, processedAccountPrices, deletedAccountPrices, accessKey);
         }
 
         public static ProcessedCategoryFeed ProcessCategories(IEnumerable<Category> preProcessCategories)
@@ -70,6 +85,18 @@ namespace PureClarity.Managers
             return new ProcessedUserFeed { Users = processedUsers.ToArray() };
         }
 
+        private static ProcessedAccountPrice ConvertAccountPrice(AccountPrice accountPrice)
+        {
+            return new ProcessedAccountPrice
+            {
+                AccountId = accountPrice.AccountId,
+                ParentId = accountPrice.ParentId,
+                Prices = accountPrice.Prices?.Select((price) => { return $"{price.Value} {price.Currency}"; }).ToArray(),
+                SalePrices = accountPrice.SalePrices?.Select((price) => { return $"{price.Value} {price.Currency}"; }).ToArray(),
+                Sku = accountPrice.Sku
+            };
+        }
+
         private static ProcessedProduct ConvertProduct(Product product)
         {
             var processedProduct = new ProcessedProduct
@@ -94,8 +121,8 @@ namespace PureClarity.Managers
 
             var associatedSkus = new List<string> { product.Sku };
             var associatedTitles = new List<string> { product.Title };
-            var prices = product.Prices.Count != 0 ? product.Prices : new List<ProductPrice>();
-            var salePrices = product.SalePrices.Count != 0 ? product.SalePrices : new List<ProductPrice>();
+            var prices = product.Prices.Count != 0 ? product.Prices : new List<Price>();
+            var salePrices = product.SalePrices.Count != 0 ? product.SalePrices : new List<Price>();
 
             foreach (var variant in product.Variants)
             {
@@ -119,13 +146,13 @@ namespace PureClarity.Managers
             return processedProduct;
         }
 
-        private static string[] ProcessPrices(List<ProductPrice> prices)
+        private static string[] ProcessPrices(List<Price> prices)
         {
             var minMaxedPrices = prices.GroupBy((price) => price.Currency)
             .Select((currencyGrouping) =>
             {
-                var orderedPrices = currencyGrouping.OrderBy((price) => { return price.Price; });
-                return new List<ProductPrice> { orderedPrices.First(), orderedPrices.Last() };
+                var orderedPrices = currencyGrouping.OrderBy((price) => { return price.Value; });
+                return new List<Price> { orderedPrices.First(), orderedPrices.Last() };
             })
             .SelectMany((minMaxedCurrencyGroupings) => minMaxedCurrencyGroupings)
             .Distinct();
@@ -134,7 +161,7 @@ namespace PureClarity.Managers
 
             foreach (var price in minMaxedPrices)
             {
-                convertedPrices.Add($"{price.Price} {price.Currency}");
+                convertedPrices.Add($"{price.Value} {price.Currency}");
             }
 
             return convertedPrices.ToArray();

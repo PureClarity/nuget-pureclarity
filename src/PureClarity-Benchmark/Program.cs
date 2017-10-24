@@ -24,6 +24,8 @@ namespace PureClarity_Benchmark
 
         private static ConcurrentBag<Product> _products;
         private static ConcurrentBag<string> _deletedProducts;
+        private static ConcurrentBag<AccountPrice> _accountPrices;
+        private static ConcurrentBag<DeletedAccountPrice> _deletedAccountPrices;
         private static ConcurrentBag<Category> _categories;
         private static ConcurrentBag<User> _users;
 
@@ -32,53 +34,71 @@ namespace PureClarity_Benchmark
         {
             _products = new ConcurrentBag<Product>();
             _deletedProducts = new ConcurrentBag<string>();
+            _accountPrices = new ConcurrentBag<AccountPrice>();
+            _deletedAccountPrices = new ConcurrentBag<DeletedAccountPrice>();
             _categories = new ConcurrentBag<Category>();
             _users = new ConcurrentBag<User>();
 
             System.Threading.Tasks.Parallel.For(0, _itemCount, (val) =>
-             {
-                 //Create fake products
-                 var testProduct = new Faker<Product>()
-                                    .CustomInstantiator(f => new Product(Guid.NewGuid().ToString(),
-                                    f.Commerce.ProductName(),
-                                    f.Lorem.Paragraph(2),
-                                    f.Internet.UrlWithPath(),
-                                    f.Internet.Avatar(),
-                                    f.Commerce.Categories(3).ToList()));
+            {
+                //Create fake products
+                var testProduct = new Faker<Product>()
+                                   .CustomInstantiator(f => new Product(Guid.NewGuid().ToString(),
+                                   f.Commerce.ProductName(),
+                                   f.Lorem.Paragraph(2),
+                                   f.Internet.UrlWithPath(),
+                                   f.Internet.Avatar(),
+                                   f.Commerce.Categories(3).ToList()));
 
-                 _products.Add(testProduct);
+                _products.Add(testProduct);
 
-                 //Fake deleted products
-                 var testDeletedProduct = new Faker<string>()
-                                    .CustomInstantiator(f => Guid.NewGuid().ToString());
+                //Fake deleted products
+                var testDeletedProduct = new Faker<string>()
+                                   .CustomInstantiator(f => Guid.NewGuid().ToString());
 
-                 _deletedProducts.Add(testDeletedProduct);
+                _deletedProducts.Add(testDeletedProduct);
 
+                //Fake account prices
+                var testAccountPrice = new Faker<AccountPrice>()
+                                   .CustomInstantiator(f => new AccountPrice())
+                                   .RuleFor(u => u.AccountId, f => f.Finance.Account())
+                                   .RuleFor(u => u.Prices, f => new List<Price> { new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "GBP")) })
+                                   .RuleFor(u => u.Sku, f => Guid.NewGuid().ToString());
 
-                 //Create fake categories
-                 var testCategory = new Faker<Category>()
-                                     .CustomInstantiator(f => new Category(Guid.NewGuid().ToString(),
-                                     f.Commerce.Categories(1)[0],
-                                     f.Internet.Url()));
+                _accountPrices.Add(testAccountPrice);
 
-                 _categories.Add(testCategory);
+                //Fake deleted account price
+                var testDeletedAccountPrice = new Faker<DeletedAccountPrice>()
+                                            .CustomInstantiator(f => new DeletedAccountPrice())
+                                            .RuleFor(u => u.AccountId, f => f.Finance.Account())
+                                            .RuleFor(u => u.Sku, f => Guid.NewGuid().ToString());
 
-                 //Create fake categories
-                 var testUser = new Faker<User>()
-                                     .CustomInstantiator(f => new User(Guid.NewGuid().ToString()))
-                                     .RuleFor(u => u.City, f => f.Address.City())
-                                     .RuleFor(u => u.Country, f => f.Address.CountryCode())
-                                     .RuleFor(u => u.DOB, f => DateTime.Now.ToString("dd/MM/yyyy"))
-                                     .RuleFor(u => u.Email, f => f.Person.Email)
-                                     .RuleFor(u => u.FirstName, f => f.Person.FirstName)
-                                     .RuleFor(u => u.LastName, f => f.Person.LastName);
+                _deletedAccountPrices.Add(testDeletedAccountPrice);
 
-                 _users.Add(testUser);
-             });
+                //Create fake categories
+                var testCategory = new Faker<Category>()
+                                    .CustomInstantiator(f => new Category(Guid.NewGuid().ToString(),
+                                    f.Commerce.Categories(1)[0],
+                                    f.Internet.Url()));
+
+                _categories.Add(testCategory);
+
+                //Create fake categories
+                var testUser = new Faker<User>()
+                                    .CustomInstantiator(f => new User(Guid.NewGuid().ToString()))
+                                    .RuleFor(u => u.City, f => f.Address.City())
+                                    .RuleFor(u => u.Country, f => f.Address.CountryCode())
+                                    .RuleFor(u => u.DOB, f => DateTime.Now.ToString("dd/MM/yyyy"))
+                                    .RuleFor(u => u.Email, f => f.Person.Email)
+                                    .RuleFor(u => u.FirstName, f => f.Person.FirstName)
+                                    .RuleFor(u => u.LastName, f => f.Person.LastName);
+
+                _users.Add(testUser);
+            });
 
             _products.AsParallel().ForAll((prod) =>
             {
-                prod.Prices.Add(new Faker<ProductPrice>().CustomInstantiator(f => new ProductPrice(Decimal.Parse(f.Commerce.Price()), "GBP")));
+                prod.Prices.Add(new Faker<Price>().CustomInstantiator(f => new Price(Decimal.Parse(f.Commerce.Price()), "GBP")));
 
                 var attrs = new Faker<IEnumerable<string>>().CustomInstantiator(f => new List<string> { f.Commerce.ProductMaterial(), f.Commerce.ProductMaterial(), f.Commerce.ProductMaterial() });
 
@@ -108,6 +128,7 @@ namespace PureClarity_Benchmark
         {
             var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
             feedManager.AddProducts(_products);
+            feedManager.AddAccountPrices(_accountPrices);
             feedManager.Validate();
             var publishResult = feedManager.PublishAsync().Result;
             Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishProductFeedResult.Error}");
@@ -119,6 +140,8 @@ namespace PureClarity_Benchmark
             var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
             feedManager.AddProducts(_products);
             feedManager.AddDeletedProductSkus(_deletedProducts);
+            feedManager.AddAccountPrices(_accountPrices);
+            feedManager.AddDeletedAccountPrices(_deletedAccountPrices);
             feedManager.Validate();
             var publishResult = feedManager.PublishDeltasAsync().Result;
             Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.Errors.Count}");
@@ -132,6 +155,11 @@ namespace PureClarity_Benchmark
             System.Threading.Tasks.Parallel.ForEach(_products, (prod) =>
             {
                 feedManager.AddProduct(prod);
+            });
+
+            System.Threading.Tasks.Parallel.ForEach(_accountPrices, (accountPrice) =>
+            {
+                feedManager.AddAccountPrice(accountPrice);
             });
 
             feedManager.Validate();
@@ -190,8 +218,10 @@ namespace PureClarity_Benchmark
             Feeds._itemCount = 1000;
             Feeds.GlobalSetup();
 
-            //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
-            var summary = BenchmarkRunner.Run<Feeds>();
+            Feeds.RunProductDeltas();
+
+            /* //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
+            var summary = BenchmarkRunner.Run<Feeds>(); */
         }
     }
 }

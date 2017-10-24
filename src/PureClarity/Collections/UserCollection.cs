@@ -8,7 +8,7 @@ using PureClarity.Validators;
 
 namespace PureClarity.Collections
 {
-    public class UserCollection : PCCollection<User>
+    internal class UserCollection : PCCollection<User>
     {
         public override ValidationResult Validate()
         {

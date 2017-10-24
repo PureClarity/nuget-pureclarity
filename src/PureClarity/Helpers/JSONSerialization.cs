@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace PureClarity.Helpers
 {
-    public class JSONSerialization
+    internal class JSONSerialization
     {
         public static string SerializeToJSON<T>(T objectToSerialize)
         {

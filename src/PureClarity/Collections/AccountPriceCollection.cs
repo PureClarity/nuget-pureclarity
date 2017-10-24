@@ -7,11 +7,11 @@ using PureClarity.Models;
 
 namespace PureClarity.Collections
 {
-    internal class CategoryCollection : PCCollection<Category>
+    internal class AccountPriceCollection : PCCollection<AccountPrice>
     {
         public override ValidationResult Validate()
         {
-            return new ValidationResult { Success = true };
+            throw new NotImplementedException();
         }
     }
 }

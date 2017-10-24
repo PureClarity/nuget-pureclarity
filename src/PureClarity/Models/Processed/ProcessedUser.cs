@@ -8,7 +8,7 @@ using PureClarity.Models;
 
 namespace PureClarity.Models
 {
-    public class ProcessedUser
+    internal class ProcessedUser
     {
 
         /// <summary>
