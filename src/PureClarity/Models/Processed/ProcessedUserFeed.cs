@@ -1,6 +1,6 @@
 namespace PureClarity.Models.Processed
 {
-    public class ProcessedUserFeed
+    internal class ProcessedUserFeed
     {
         public ProcessedUser[] Users;
     }

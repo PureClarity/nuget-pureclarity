@@ -6,7 +6,7 @@ using PureClarity.Models;
 
 namespace PureClarity.Validators
 {
-    public class UserValidator : PCValidationBase
+    internal class UserValidator : PCValidationBase
     {
         public static bool IsDOBValid(string dob)
         {

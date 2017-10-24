@@ -3,7 +3,7 @@ using PureClarity.Models;
 
 namespace PureClarity.Validators
 {
-    public abstract class PCValidationBase
+    internal abstract class PCValidationBase
     {
         protected IDictionary<string, IEnumerable<string>> InvalidRecords;
 

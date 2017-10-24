@@ -1,6 +1,6 @@
 namespace PureClarity.Models
 {
-    public class TokenFeed
+    internal class TokenFeed
     {
         public string AppKey;
         public string[] Tokens;

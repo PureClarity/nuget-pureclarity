@@ -17,6 +17,8 @@ namespace PureClarity.Managers
         private DeletedProductCollection _deletedProductCollection;
         private CategoryCollection _categoryCollection;
         private BrandCollection _brandCollection;
+        private AccountPriceCollection _accountPriceCollection;
+        private DeletedAccountPriceCollection _deletedAccountPriceCollection;
         private UserCollection _userCollection;
 
         private bool _productsPushed;
@@ -31,8 +33,10 @@ namespace PureClarity.Managers
             _productCollection = new ProductCollection();
             _categoryCollection = new CategoryCollection();
             _brandCollection = new BrandCollection();
+            _accountPriceCollection = new AccountPriceCollection();
             _userCollection = new UserCollection();
             _deletedProductCollection = new DeletedProductCollection();
+            _deletedAccountPriceCollection = new DeletedAccountPriceCollection();
         }
 
         #region Add
@@ -56,6 +60,12 @@ namespace PureClarity.Managers
         public AddItemResult AddBrand(Brand brand) => _brandCollection.AddItem(brand);
         public IEnumerable<AddItemResult> AddBrands(IEnumerable<Brand> brands) => _brandCollection.AddItems(brands);
 
+        public AddItemResult AddAccountPrice(AccountPrice accountPrice) => _accountPriceCollection.AddItem(accountPrice);
+        public IEnumerable<AddItemResult> AddAccountPrices(IEnumerable<AccountPrice> accountPrices) => _accountPriceCollection.AddItems(accountPrices);
+
+        public AddItemResult AddDeletedAccountPrice(DeletedAccountPrice deletedAccountPrice) => _deletedAccountPriceCollection.AddItem(deletedAccountPrice);
+        public IEnumerable<AddItemResult> AddDeletedAccountPrices(IEnumerable<DeletedAccountPrice> deletedAccountPrices) => _deletedAccountPriceCollection.AddItems(deletedAccountPrices);
+
         public AddItemResult AddUser(User user) => _userCollection.AddItem(user);
         public IEnumerable<AddItemResult> AddUsers(IEnumerable<User> users) => _userCollection.AddItems(users);
 
@@ -75,6 +85,13 @@ namespace PureClarity.Managers
         public RemoveItemResult<Brand> RemoveBrand(string brandId) => _brandCollection.RemoveItemFromCollection(brandId);
         public IEnumerable<RemoveItemResult<Brand>> RemoveBrands(IEnumerable<string> brandIds) => _brandCollection.RemoveItemsFromCollection(brandIds);
 
+        public RemoveItemResult<AccountPrice> RemoveAccountPrice(string accountPriceId) => _accountPriceCollection.RemoveItemFromCollection(accountPriceId);
+        public IEnumerable<RemoveItemResult<AccountPrice>> RemoveAccountPrices(IEnumerable<string> accountPriceIds) => _accountPriceCollection.RemoveItemsFromCollection(accountPriceIds);
+
+        public RemoveItemResult<DeletedAccountPrice> RemoveDeletedAccountPrice(string deletedAccountPriceId) => _deletedAccountPriceCollection.RemoveItemFromCollection(deletedAccountPriceId);
+        public IEnumerable<RemoveItemResult<DeletedAccountPrice>> RemoveDeletedAccountPrices(IEnumerable<string> deletedAccountPriceIds) => _deletedAccountPriceCollection.RemoveItemsFromCollection(deletedAccountPriceIds);
+
+
         public RemoveItemResult<User> RemoveUser(string userId) => _userCollection.RemoveItemFromCollection(userId);
         public IEnumerable<RemoveItemResult<User>> RemoveUser(IEnumerable<string> userIds) => _userCollection.RemoveItemsFromCollection(userIds);
 
@@ -88,7 +105,7 @@ namespace PureClarity.Managers
             validationResult.ProductValidationResult = _productCollection.Validate();
             validationResult.CategoryValidationResult = _categoryCollection.Validate();
             //validationResult.BrandValidationResult = _brandCollection.Validate();
-            validationResult.UserValidationResult = _userCollection.Validate(); 
+            validationResult.UserValidationResult = _userCollection.Validate();
             validationResult.Success = validationResult.ProductValidationResult.Success
             && validationResult.CategoryValidationResult.Success
             //&& validationResult.BrandValidationResult.Success;
@@ -108,7 +125,7 @@ namespace PureClarity.Managers
 
             if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishProductFeedResult = publishManager.PublishProductFeed(_productCollection.GetItems()).Result;
+                publishResult.PublishProductFeedResult = publishManager.PublishProductFeed(_productCollection.GetItems(), _accountPriceCollection.GetItems()).Result;
                 _productsPushed = true;
             }
 
@@ -136,7 +153,7 @@ namespace PureClarity.Managers
 
             if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishProductFeedResult = await publishManager.PublishProductFeed(_productCollection.GetItems());
+                publishResult.PublishProductFeedResult = await publishManager.PublishProductFeed(_productCollection.GetItems(), _accountPriceCollection.GetItems());
                 _productsPushed = true;
             }
 
@@ -164,7 +181,7 @@ namespace PureClarity.Managers
 
             if (!_productsPushed)
             {
-                var publishProductDeltas = publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accessKey).Result;
+                var publishProductDeltas = publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accountPriceCollection.GetItems(), _deletedAccountPriceCollection.GetItems(), _accessKey).Result;
                 publishResult = publishProductDeltas;
                 _productsPushed = true;
             }
@@ -179,7 +196,7 @@ namespace PureClarity.Managers
 
             if (!_productsPushed)
             {
-                publishResult = await publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accessKey);
+                publishResult = await publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accountPriceCollection.GetItems(), _deletedAccountPriceCollection.GetItems(), _accessKey);
                 _productsPushed = true;
             }
 

@@ -12,7 +12,7 @@
            "program": "${workspaceRoot}/src/PureClarity-Benchmark/bin/Debug/netcoreapp2.0/PureClarity-Benchmark.dll",
            "args": ["-c Debug"],
            "cwd": "${workspaceRoot}/src/PureClarity-Benchmark",
-           "stopAtEntry": true,
+           "stopAtEntry": false,
            "console": "internalConsole"
        },        
         {

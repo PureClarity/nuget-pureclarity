@@ -13,7 +13,7 @@ using Renci.SshNet.Async;
 
 namespace PureClarity.Managers
 {
-    public class PublishManager
+    internal class PublishManager
     {
         private readonly string accessKey;
         private readonly string secretKey;
@@ -28,11 +28,11 @@ namespace PureClarity.Managers
             this.region = region;
         }
 
-        public async Task<PublishFeedResult> PublishProductFeed(IEnumerable<Product> products)
+        public async Task<PublishFeedResult> PublishProductFeed(IEnumerable<Product> products, IEnumerable<AccountPrice> accountPrices)
         {
             try
             {
-                var productFeed = ConversionManager.ProcessProductFeed(products);
+                var productFeed = ConversionManager.ProcessProductFeed(products, accountPrices);
                 var feedJSON = JSONSerialization.SerializeToJSON(productFeed);
                 var endpoint = RegionEndpoints.GetRegionEndpoints(region);
                 await UploadToSTFP(feedJSON, endpoint.SFTPEndpoint);
@@ -44,7 +44,7 @@ namespace PureClarity.Managers
             }
         }
 
-        public async Task<PublishDeltaResult> PublishProductDeltas(IEnumerable<Product> products, IEnumerable<DeletedProductSku> deletedProducts, string accessKey)
+        public async Task<PublishDeltaResult> PublishProductDeltas(IEnumerable<Product> products, IEnumerable<DeletedProductSku> deletedProducts, IEnumerable<AccountPrice> accountPrices, IEnumerable<DeletedAccountPrice> deletedAccountPrices, string accessKey)
         {
             var deltas = new List<ProcessedProductDelta>();
             var publishDeltaResult = new PublishDeltaResult();
@@ -53,7 +53,7 @@ namespace PureClarity.Managers
 
             try
             {
-                deltas = ConversionManager.ProcessProductDeltas(products, deletedProducts, accessKey);
+                deltas = ConversionManager.ProcessProductDeltas(products, deletedProducts, accountPrices, deletedAccountPrices, accessKey);
             }
             catch (Exception e)
             {

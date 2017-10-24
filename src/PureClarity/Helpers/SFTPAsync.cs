@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Renci.SshNet.Async
 {
-    public static class SshNetExtensions
+    internal static class SshNetExtensions
     {
         public static Task UploadAsync(this SftpClient client,
            Stream input, string path, Action<ulong> uploadCallback = null,

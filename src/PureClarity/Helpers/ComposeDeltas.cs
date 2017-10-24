@@ -2,19 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PureClarity.Models;
+using PureClarity.Models.Processed;
 
 namespace PureClarity.Helpers
 {
-    public class ComposeDeltas
+    internal class ComposeDeltas
     {
         const int _maxDeltaSize = 250000;
 
-        public static List<ProcessedProductDelta> GenerateDeltas(IEnumerable<ProcessedProduct> processedProducts, IEnumerable<DeletedProductSku> deletedProducts, string appKey)
+        public static List<ProcessedProductDelta> GenerateDeltas(IEnumerable<ProcessedProduct> processedProducts, IEnumerable<DeletedProductSku> deletedProducts, IEnumerable<ProcessedAccountPrice> accountPrices, IEnumerable<DeletedAccountPrice> deletedAccountPrices, string appKey)
         {
-            var validProductDeltas = GenerateProductDeltas(processedProducts, appKey);
-            var validDeletedProductDeltas = GenerateDeletedProductDeltas(deletedProducts, appKey);
+            var productDeltas = GenerateProductDeltas(processedProducts, appKey);
+            var deletedProductDeltas = GenerateDeletedProductDeltas(deletedProducts, appKey);
+            var accountPriceDeltas = GenerateAccountPriceDeltas(accountPrices, appKey);
+            var deletedAccountPriceDeltas = GenerateDeletedAccountPriceDeltas(deletedAccountPrices, appKey);
 
-            return validProductDeltas.Concat(validDeletedProductDeltas).ToList();
+            return productDeltas.Concat(deletedProductDeltas).Concat(accountPriceDeltas).Concat(deletedAccountPriceDeltas).ToList();
         }
 
         private static List<ProcessedProductDelta> GenerateProductDeltas(IEnumerable<ProcessedProduct> processedProducts, string appKey)
@@ -81,6 +84,72 @@ namespace PureClarity.Helpers
             }
 
             return validDeletedProductDeltas;
+        }
+
+        private static List<ProcessedProductDelta> GenerateAccountPriceDeltas(IEnumerable<ProcessedAccountPrice> accountPrices, string appKey)
+        {
+            var validAccountPriceDeltas = new List<ProcessedProductDelta>();
+            var deltasValid = false;
+            var productsPerDelta = 5000;
+
+            while (!deltasValid)
+            {
+                validAccountPriceDeltas.Clear();
+                var accountPricePartitions = Partition(accountPrices, productsPerDelta);
+
+                deltasValid = accountPricePartitions.All((partition) =>
+                {
+                    var feed = new ProcessedProductDelta(appKey);
+                    feed.AccountPrices = partition.ToArray();
+                    validAccountPriceDeltas.Add(feed);
+                    var deltaTotal = JSONSerialization.GetByteSizeOfObject(feed);
+                    return deltaTotal < _maxDeltaSize;
+                });
+
+                if (!deltasValid)
+                {
+                    productsPerDelta = productsPerDelta / 5;
+                    if (productsPerDelta < 8)
+                    {
+                        throw new Exception("Individual account prices are too large to fit into a delta to send to PureClarity. Please reduce the amount of data been sent per product.");
+                    }
+                }
+            }
+
+            return validAccountPriceDeltas;
+        }
+
+        private static List<ProcessedProductDelta> GenerateDeletedAccountPriceDeltas(IEnumerable<DeletedAccountPrice> deletedAccountPrices, string appKey)
+        {
+            var validAccountPriceDeltas = new List<ProcessedProductDelta>();
+            var deltasValid = false;
+            var productsPerDelta = 5000;
+
+            while (!deltasValid)
+            {
+                validAccountPriceDeltas.Clear();
+                var accountPricePartitions = Partition(deletedAccountPrices, productsPerDelta);
+
+                deltasValid = accountPricePartitions.All((partition) =>
+                {
+                    var feed = new ProcessedProductDelta(appKey);
+                    feed.DeletedAccountPrices = partition.ToArray();
+                    validAccountPriceDeltas.Add(feed);
+                    var deltaTotal = JSONSerialization.GetByteSizeOfObject(feed);
+                    return deltaTotal < _maxDeltaSize;
+                });
+
+                if (!deltasValid)
+                {
+                    productsPerDelta = productsPerDelta / 5;
+                    if (productsPerDelta < 8)
+                    {
+                        throw new Exception("Individual account prices are too large to fit into a delta to send to PureClarity. Please reduce the amount of data been sent per product.");
+                    }
+                }
+            }
+
+            return validAccountPriceDeltas;
         }
 
         public static IEnumerable<IEnumerable<T>> Partition<T>(IEnumerable<T> sequence, int size)

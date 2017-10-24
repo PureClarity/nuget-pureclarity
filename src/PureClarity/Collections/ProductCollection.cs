@@ -8,7 +8,7 @@ using PureClarity.Validators;
 
 namespace PureClarity.Collections
 {
-    public class ProductCollection : PCCollection<Product>
+    internal class ProductCollection : PCCollection<Product>
     {
 
         private ConcurrentDictionary<string, List<Product>> _variantsAwaitingParents;

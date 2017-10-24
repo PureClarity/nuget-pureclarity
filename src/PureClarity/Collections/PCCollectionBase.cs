@@ -6,7 +6,7 @@ using PureClarity.Models;
 
 namespace PureClarity.Collections
 {
-    public abstract class PCCollection<T> where T : PCModelBase
+    internal abstract class PCCollection<T> where T : PCModelBase
     {
         protected ConcurrentDictionary<string, T> _items;
 

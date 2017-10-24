@@ -8,7 +8,7 @@ using PureClarity.Models.Response;
 
 namespace PureClarity.Helpers
 {
-    public class HttpCalls
+    internal class HttpCalls
     {
         public static async Task<T> Post<T>(string bodyToPost, string postUrl)
         {
