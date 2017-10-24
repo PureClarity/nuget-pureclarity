@@ -167,7 +167,7 @@ namespace PureClarity_Test
             var sku = "Test";
             var productCollection = GetNewProductCollection();
             var product = CreateProduct(sku);
-            product.Prices.Add(new ProductPrice(10.0m, "GBP"));
+            product.Prices.Add(new Price(10.0m, "GBP"));
             productCollection.AddItem(product);
 
             var result = productCollection.Validate();
@@ -203,12 +203,12 @@ namespace PureClarity_Test
             var productCollection = GetNewProductCollection();
 
             var product1 = CreateProduct(sku1);
-            product1.Prices.Add(new ProductPrice(10.0m, "GBP"));
-            product1.Prices.Add(new ProductPrice(12.0m, "USD"));
+            product1.Prices.Add(new Price(10.0m, "GBP"));
+            product1.Prices.Add(new Price(12.0m, "USD"));
             productCollection.AddItem(product1);
 
             var product2 = CreateProduct(sku2);
-            product2.Prices.Add(new ProductPrice(10.0m, "GBP"));
+            product2.Prices.Add(new Price(10.0m, "GBP"));
             productCollection.AddItem(product2);
 
             var result = productCollection.Validate();

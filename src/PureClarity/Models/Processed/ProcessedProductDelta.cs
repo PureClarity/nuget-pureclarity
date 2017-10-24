@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PureClarity.Models.Processed;
 
 namespace PureClarity.Models
 {
@@ -7,6 +8,9 @@ namespace PureClarity.Models
         public string AppKey { get; }
         public ProcessedProduct[] Products;
         public string[] DeleteProducts;
+        public ProcessedAccountPrice[] AccountPrices;
+        public DeletedAccountPrice[] DeletedAccountPrices;
+
         public ProcessedProductDelta(string appKey)
         {
             AppKey = appKey;

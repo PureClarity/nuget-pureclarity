@@ -2,14 +2,14 @@ using Newtonsoft.Json;
 
 namespace PureClarity.Models
 {
-    public class ProductPrice
+    public class Price
     {
         public string Currency;
-        public decimal Price;
+        public decimal Value;
 
-        public ProductPrice(decimal price, string currency)
+        public Price(decimal value, string currency)
         {
-            Price = price;
+            Value = value;
             Currency = currency ?? throw new System.ArgumentNullException(nameof(currency));
         }
     }

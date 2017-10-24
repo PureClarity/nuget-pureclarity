@@ -96,7 +96,7 @@ namespace PureClarity.Validators
             return priceErrors;
         }
 
-        private void ValidateCurrencies(IEnumerable<ProductPrice> prices, ref List<string> errors, bool salePrices)
+        private void ValidateCurrencies(IEnumerable<Price> prices, ref List<string> errors, bool salePrices)
         {
             var missingCurrencies = Currencies.Where((currency) =>
             {
