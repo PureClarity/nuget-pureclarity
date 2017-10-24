@@ -3,7 +3,7 @@ using PureClarity.Models.Processed;
 
 namespace PureClarity.Models
 {
-    public class ProcessedProductFeed
+    internal class ProcessedProductFeed
     {
         public List<ProcessedProduct> Products;
         public List<ProcessedAccountPrice> AccountPrices;

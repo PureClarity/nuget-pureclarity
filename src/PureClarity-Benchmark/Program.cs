@@ -59,12 +59,21 @@ namespace PureClarity_Benchmark
                 _deletedProducts.Add(testDeletedProduct);
 
                 //Fake account prices
-                var testAccountPrice = new Faker<AccountPrice>().CustomInstantiator(f => new AccountPrice())
+                var testAccountPrice = new Faker<AccountPrice>()
+                                   .CustomInstantiator(f => new AccountPrice())
                                    .RuleFor(u => u.AccountId, f => f.Finance.Account())
                                    .RuleFor(u => u.Prices, f => new List<Price> { new Faker<Price>().CustomInstantiator(g => new Price(Decimal.Parse(g.Commerce.Price()), "GBP")) })
                                    .RuleFor(u => u.Sku, f => Guid.NewGuid().ToString());
 
                 _accountPrices.Add(testAccountPrice);
+
+                //Fake deleted account price
+                var testDeletedAccountPrice = new Faker<DeletedAccountPrice>()
+                                            .CustomInstantiator(f => new DeletedAccountPrice())
+                                            .RuleFor(u => u.AccountId, f => f.Finance.Account())
+                                            .RuleFor(u => u.Sku, f => Guid.NewGuid().ToString());
+
+                _deletedAccountPrices.Add(testDeletedAccountPrice);
 
                 //Create fake categories
                 var testCategory = new Faker<Category>()
@@ -132,6 +141,7 @@ namespace PureClarity_Benchmark
             feedManager.AddProducts(_products);
             feedManager.AddDeletedProductSkus(_deletedProducts);
             feedManager.AddAccountPrices(_accountPrices);
+            feedManager.AddDeletedAccountPrices(_deletedAccountPrices);
             feedManager.Validate();
             var publishResult = feedManager.PublishDeltasAsync().Result;
             Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.Errors.Count}");

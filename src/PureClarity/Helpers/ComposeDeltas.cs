@@ -6,7 +6,7 @@ using PureClarity.Models.Processed;
 
 namespace PureClarity.Helpers
 {
-    public class ComposeDeltas
+    internal class ComposeDeltas
     {
         const int _maxDeltaSize = 250000;
 

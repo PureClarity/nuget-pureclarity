@@ -1,6 +1,6 @@
 namespace PureClarity.Models
 {
-    public class RegionEndpoint
+    internal class RegionEndpoint
     {
         public string APIEndpoint;
         public string SFTPEndpoint;

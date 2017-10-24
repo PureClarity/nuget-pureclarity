@@ -3,7 +3,7 @@ using PureClarity.Models.Processed;
 
 namespace PureClarity.Models
 {
-    public class ProcessedProductDelta
+    internal class ProcessedProductDelta
     {
         public string AppKey { get; }
         public ProcessedProduct[] Products;

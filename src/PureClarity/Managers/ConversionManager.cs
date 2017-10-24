@@ -8,7 +8,7 @@ using PureClarity.Models.Processed;
 
 namespace PureClarity.Managers
 {
-    public class ConversionManager
+    internal class ConversionManager
     {
         public static ProcessedProductFeed ProcessProductFeed(IEnumerable<Product> preProcessProducts, IEnumerable<AccountPrice> accountPrices)
         {

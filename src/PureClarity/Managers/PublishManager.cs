@@ -13,7 +13,7 @@ using Renci.SshNet.Async;
 
 namespace PureClarity.Managers
 {
-    public class PublishManager
+    internal class PublishManager
     {
         private readonly string accessKey;
         private readonly string secretKey;

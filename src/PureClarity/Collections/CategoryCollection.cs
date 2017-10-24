@@ -7,7 +7,7 @@ using PureClarity.Models;
 
 namespace PureClarity.Collections
 {
-    public class CategoryCollection : PCCollection<Category>
+    internal class CategoryCollection : PCCollection<Category>
     {
         public override ValidationResult Validate()
         {

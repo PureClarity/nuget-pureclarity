@@ -1,6 +1,6 @@
 namespace PureClarity.Models.Processed
 {
-    public class ProcessedAccountPrice
+    internal class ProcessedAccountPrice
     {
         public string AccountId;
         public string Sku;

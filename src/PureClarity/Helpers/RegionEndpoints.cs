@@ -2,7 +2,7 @@ using PureClarity.Models;
 
 namespace PureClarity.Helpers
 {
-    public class RegionEndpoints
+    internal class RegionEndpoints
     {
 
         private static RegionEndpoint[] regionEndpoints = {

@@ -5,7 +5,7 @@ using PureClarity.Models;
 
 namespace PureClarity.Validators
 {
-    public class ProductValidator : PCValidationBase
+    internal class ProductValidator : PCValidationBase
     {
         private HashSet<string> Currencies;
 

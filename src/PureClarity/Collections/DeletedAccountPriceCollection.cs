@@ -7,7 +7,7 @@ using PureClarity.Models;
 
 namespace PureClarity.Collections
 {
-    public class DeletedAccountPriceCollection : PCCollection<DeletedAccountPrice>
+    internal class DeletedAccountPriceCollection : PCCollection<DeletedAccountPrice>
     {
         public override ValidationResult Validate()
         {

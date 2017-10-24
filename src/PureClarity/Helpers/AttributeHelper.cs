@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace PureClarity.Helpers
 {
-    public class AttributeHelper
+    internal class AttributeHelper
     {
         public static JArray GetJTokenAttributeValueArray(IEnumerable<string> attributeValues)
         {
