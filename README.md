@@ -1,4 +1,4 @@
-# nuget-pureclarity
+# nuget-pureclarity [![NuGet Badge](https://buildstats.info/nuget/PureClarity?includePreReleases=true)](https://www.nuget.org/packages/PureClarity)
 The PureClarity SDK .Net Standard repo. Built to target .Net Standard 1.3. [Click here for more information on .Net Standard.](https://github.com/dotnet/standard/blob/master/docs/versions.md)
 
 # API
