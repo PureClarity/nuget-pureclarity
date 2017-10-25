@@ -30,16 +30,18 @@ namespace PureClarity.Collections
             {
                 if (_items.ContainsKey(item.ParentId))
                 {
-                    var parentProduct = _items[item.ParentId];                    
+                    var parentProduct = _items[item.ParentId];
 
-                    if(parentProduct.Variants.All((var)=> {return var.Id != item.Id;}))
+                    if (parentProduct.Variants.All((var) => { return var.Id != item.Id; }))
                     {
                         parentProduct.Variants.Add(item);
                         _items.AddOrUpdate(parentProduct.Id, parentProduct, (key, previousItem) =>
-                        {                       
+                        {
                             return parentProduct;
                         });
-                    }else{
+                    }
+                    else
+                    {
                         result.Success = false;
                         result.Error = $"Duplicate item found: {item.Id}. Newest item not added.";
                     }
@@ -48,14 +50,16 @@ namespace PureClarity.Collections
                 {
                     var existingList = _variantsAwaitingParents[item.ParentId];
 
-                    if(existingList.All((var)=> {return var.Id != item.Id;}))
+                    if (existingList.All((var) => { return var.Id != item.Id; }))
                     {
-                         existingList.Add(item);
+                        existingList.Add(item);
                         _variantsAwaitingParents.AddOrUpdate(item.ParentId, existingList, (key, previousItem) =>
-                        {                       
+                        {
                             return existingList;
                         });
-                    }else{
+                    }
+                    else
+                    {
                         result.Success = false;
                         result.Error = $"Duplicate item found: {item.Id}. Newest item not added.";
                     }
