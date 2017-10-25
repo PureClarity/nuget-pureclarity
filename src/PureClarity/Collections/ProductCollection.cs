@@ -62,7 +62,7 @@ namespace PureClarity.Collections
                 }
                 else
                 {
-                    _variantsAwaitingParents.AddOrUpdate(item.Id, new List<Product> { item }, (key, previousItem) =>
+                    _variantsAwaitingParents.AddOrUpdate(item.ParentId, new List<Product> { item }, (key, previousItem) =>
                        {
                            result.Success = false;
                            result.Error = $"Duplicate item found: {item.Id}. Newest item not added.";

@@ -184,6 +184,34 @@ namespace PureClarity_Benchmark
             var publishResult = feedManager.PublishAsync().Result;
             Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishProductFeedResult.Error}");
         }
+        
+        [Benchmark]
+        public static void RunProductFeedVariantIssueCheck()
+        {
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            var prod = new Product("59095",
+            "Bear June Medium", 
+            "<p>.</p>", 
+            "souvenirs/novelties/bear-june-medium", 
+            "siteUrl/filedepository/productimages/Souvenirs/novelties/bear-june-medium-1.jpg", 
+            new List<string>{"Novelties > Souvenirs"});
+
+            var variant = new Product("5909565",
+            "Bear June Medium", 
+            "<p>.</p>", 
+            "souvenirs/novelties/bear-june-medium", 
+            "siteUrl/filedepository/productimages/Souvenirs/novelties/bear-june-medium-1.jpg", 
+            new List<string>{"Novelties > Souvenirs"});
+            variant.Attributes.Add("Personalisable", new List<string>{"false"});
+            variant.ParentId = "59095";
+
+
+            var res1 = feedManager.AddProduct(variant);            
+            var res2 = feedManager.AddProduct(prod);
+            var valid = feedManager.Validate();
+            var publishResult = feedManager.PublishAsync().Result;
+            Console.WriteLine($"Published: {publishResult.Success.ToString()}. Error: {publishResult.PublishProductFeedResult.Error}");
+        }
 
         [Benchmark]
         public static void RunProductDeltas()
@@ -273,9 +301,9 @@ namespace PureClarity_Benchmark
         {
             Feeds._itemCount = 1000;
             Feeds.GlobalSetup();
-            Feeds.RunParallelAddProductFeed();
-            /*  //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
-             var summary = BenchmarkRunner.Run<Feeds>(); */
+           
+            //Runs a benchmark on all methods tagged with the [Benchmark] attribute and provides results at the end
+            var summary = BenchmarkRunner.Run<Feeds>();
         }
     }
 }
