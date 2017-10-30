@@ -16,7 +16,7 @@ namespace PureClarity.Collections
 
             foreach (var user in _items)
             {
-                if (UserValidator.IsDOBValid(user.Value.DOB))
+                if (!UserValidator.IsDOBValid(user.Value.DOB))
                 {
                     invalidItems.Add(user.Value.Id, new List<string> { "DOB is invalid" });
                 }

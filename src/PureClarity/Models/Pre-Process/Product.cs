@@ -106,7 +106,7 @@ namespace PureClarity.Models
         /// Optional. Custom attributes which by default will be assumed to be facets to be used in the search results. 
         /// Products need to only define the attributes they have.
         /// </summary>
-        public IDictionary<string, IEnumerable<string>> Attributes { get; set; }
+        public Dictionary<string, List<string>> Attributes { get; set; }
 
         public ProductVisibility Visibility = ProductVisibility.VISIBILITY_BOTH;
 
@@ -123,7 +123,7 @@ namespace PureClarity.Models
             Prices = new List<Price>();
             SalePrices = new List<Price>();
             Variants = new List<Product>();
-            Attributes = new Dictionary<string, IEnumerable<string>>();
+            Attributes = new Dictionary<string, List<string>>();
         }
 
     }
