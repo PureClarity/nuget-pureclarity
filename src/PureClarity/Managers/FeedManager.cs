@@ -209,10 +209,10 @@ namespace PureClarity.Managers
 
         #region CollectionState
 
-        public CollectionState GetProductCollectionState() => _productCollection.GetCollectionState();
-        public CollectionState GetCategoryCollectionState() => _categoryCollection.GetCollectionState();
-        public CollectionState GetBrandCollectionState() => _brandCollection.GetCollectionState();
-        public CollectionState GetUserCollectionState() => _userCollection.GetCollectionState();
+        public CollectionState<Product> GetProductCollectionState() => _productCollection.GetCollectionState();
+        public CollectionState<Category> GetCategoryCollectionState() => _categoryCollection.GetCollectionState();
+        public CollectionState<Brand> GetBrandCollectionState() => _brandCollection.GetCollectionState();
+        public CollectionState<User> GetUserCollectionState() => _userCollection.GetCollectionState();
 
 
         #endregion
