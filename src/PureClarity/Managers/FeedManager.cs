@@ -210,6 +210,7 @@ namespace PureClarity.Managers
         #region CollectionState
 
         public CollectionState<Product> GetProductCollectionState() => _productCollection.GetCollectionState();
+        public CollectionState<AccountPrice> GetAccountPriceCollectionState() => _accountPriceCollection.GetCollectionState();
         public CollectionState<Category> GetCategoryCollectionState() => _categoryCollection.GetCollectionState();
         public CollectionState<Brand> GetBrandCollectionState() => _brandCollection.GetCollectionState();
         public CollectionState<User> GetUserCollectionState() => _userCollection.GetCollectionState();
