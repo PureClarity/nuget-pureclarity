@@ -124,13 +124,26 @@ namespace PureClarity.Managers
             var associatedTitles = new List<string> { product.Title };
             var prices = product.Prices.Count != 0 ? product.Prices : new List<Price>();
             var salePrices = product.SalePrices.Count != 0 ? product.SalePrices : new List<Price>();
-
+            
+            var attributes = new Dictionary<string, JToken>();
             foreach (var variant in product.Variants)
             {
                 associatedSkus.Add(variant.Sku);
-                associatedTitles.Add(variant.Title);
+                associatedTitles.Add(variant.Title);              
                 prices.AddRange(variant.Prices);
                 salePrices.AddRange(variant.SalePrices);
+
+                foreach (var attr in variant.Attributes)
+                {
+                    var values = attr.Value.Select((value) => { return WebUtility.HtmlEncode(value); });
+                    if(attributes.ContainsKey(WebUtility.HtmlEncode(attr.Key)))
+                    {
+                        var oldValues = attributes[WebUtility.HtmlEncode(attr.Key)].Select(x => x.ToString()).ToList();
+                        attributes[WebUtility.HtmlEncode(attr.Key)] = new JArray(oldValues.Concat(values).Distinct());
+                    }else{
+                        attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                    }
+                }
             }
 
             processedProduct.AssociatedSkus = associatedSkus.ToArray();
@@ -138,11 +151,16 @@ namespace PureClarity.Managers
             processedProduct.Prices = ProcessPrices(prices);
             processedProduct.SalePrices = ProcessPrices(salePrices);
 
-            var attributes = new Dictionary<string, JToken>();
             foreach (var attr in product.Attributes)
             {
                 var values = attr.Value.Select((value) => { return WebUtility.HtmlEncode(value); });
-                attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                if(attributes.ContainsKey(WebUtility.HtmlEncode(attr.Key)))
+                {
+                    var oldValues = attributes[WebUtility.HtmlEncode(attr.Key)].Select(x => x.ToString()).ToList();
+                    attributes[WebUtility.HtmlEncode(attr.Key)] = new JArray(oldValues.Concat(values).Distinct());
+                }else{
+                    attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                }
             }
 
             processedProduct.Attributes = attributes;
