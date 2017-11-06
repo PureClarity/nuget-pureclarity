@@ -135,13 +135,15 @@ namespace PureClarity.Managers
 
                 foreach (var attr in variant.Attributes)
                 {
-                    var values = attr.Value.Select((value) => { return WebUtility.HtmlEncode(value); });
-                    if(attributes.ContainsKey(WebUtility.HtmlEncode(attr.Key)))
-                    {
-                        var oldValues = attributes[WebUtility.HtmlEncode(attr.Key)].Select(x => x.ToString()).ToList();
-                        attributes[WebUtility.HtmlEncode(attr.Key)] = new JArray(oldValues.Concat(values).Distinct());
-                    }else{
-                        attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                    var values = attr.Value.Where(val => !string.IsNullOrWhiteSpace(val)).Select((value) => { return WebUtility.HtmlEncode(value); });
+                    if(values.Count() > 0){
+                        if(attributes.ContainsKey(WebUtility.HtmlEncode(attr.Key)))
+                        {
+                            var oldValues = attributes[WebUtility.HtmlEncode(attr.Key)].Select(x => x.ToString()).ToList();
+                            attributes[WebUtility.HtmlEncode(attr.Key)] = new JArray(oldValues.Concat(values).Distinct());
+                        }else{
+                            attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                        }
                     }
                 }
             }
@@ -152,14 +154,16 @@ namespace PureClarity.Managers
             processedProduct.SalePrices = ProcessPrices(salePrices);
 
             foreach (var attr in product.Attributes)
-            {
-                var values = attr.Value.Select((value) => { return WebUtility.HtmlEncode(value); });
-                if(attributes.ContainsKey(WebUtility.HtmlEncode(attr.Key)))
-                {
-                    var oldValues = attributes[WebUtility.HtmlEncode(attr.Key)].Select(x => x.ToString()).ToList();
-                    attributes[WebUtility.HtmlEncode(attr.Key)] = new JArray(oldValues.Concat(values).Distinct());
-                }else{
-                    attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+            {                
+                var values = attr.Value.Where(val => !string.IsNullOrWhiteSpace(val)).Select((value) => { return WebUtility.HtmlEncode(value); });
+                if(values.Count() > 0){
+                    if(attributes.ContainsKey(WebUtility.HtmlEncode(attr.Key)))
+                    {
+                        var oldValues = attributes[WebUtility.HtmlEncode(attr.Key)].Select(x => x.ToString()).ToList();
+                        attributes[WebUtility.HtmlEncode(attr.Key)] = new JArray(oldValues.Concat(values).Distinct());
+                    }else{
+                        attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                    }
                 }
             }
 
@@ -185,7 +189,7 @@ namespace PureClarity.Managers
                 convertedPrices.Add($"{price.Value} {price.Currency}");
             }
 
-            return convertedPrices.ToArray();
+            return convertedPrices.Count() > 0 ? convertedPrices.ToArray() : null;
         }
     }
 }
