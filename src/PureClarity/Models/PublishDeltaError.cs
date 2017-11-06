@@ -6,5 +6,8 @@ namespace PureClarity.Models
     {
         public string Error;
         public IEnumerable<string> Skus;
+        public IEnumerable<string> DeletedSkus;
+        public IEnumerable<AccountPriceBase> AccountPrices;
+        public IEnumerable<AccountPriceBase> DeletedAccountPrices;
     }
 }

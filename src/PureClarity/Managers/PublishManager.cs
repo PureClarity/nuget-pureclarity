@@ -63,7 +63,10 @@ namespace PureClarity.Managers
                     Errors = new List<PublishDeltaError> {
                      new PublishDeltaError {
                          Error = e.Message,
-                         Skus = products.Select((prod)=> prod.Sku)
+                         Skus = products.Select(prod => prod.Sku),
+                         DeletedSkus = deletedProducts.Select(deletedProd => deletedProd.Sku),
+                         AccountPrices = accountPrices,
+                         DeletedAccountPrices = deletedAccountPrices
                          }
                       }
                 };
