@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <!-- Required elements-->
+        <id>PureClarity</id>
+        <version>$version$</version>
+        <description></description>
+        <authors>PureClarity</authors>
+
+        <!-- Optional elements -->
+        <title>PureClarity</title>
+        <iconUrl>https://s3-eu-west-1.amazonaws.com/pureclarity-media/pureclarity.png</iconUrl>
+        <summary>An SDK for sending PureClarity feeds/deltas and querying delta status.</summary>
+        <projectUrl>https://github.com/PureClarity/nuget-pureclarity</projectUrl>
+        <!-- ... -->
+    </metadata>
+    <!-- Optional 'files' node -->
+</package>

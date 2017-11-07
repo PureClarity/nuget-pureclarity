@@ -35,12 +35,12 @@ namespace PureClarity.Managers
                 var productFeed = ConversionManager.ProcessProductFeed(products, accountPrices);
                 var feedJSON = JSONSerialization.SerializeToJSON(productFeed);
                 var endpoint = RegionEndpoints.GetRegionEndpoints(region);
-                await UploadToSTFP(feedJSON, endpoint.SFTPEndpoint);
+                await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
             catch (Exception e)
-            {
-                return new PublishFeedResult { Success = false, Error = e.Message };
+            {               
+                return new PublishFeedResult { Success = false, Error = e.Message, StackTrace = e.StackTrace };
             }
         }
 
@@ -97,7 +97,7 @@ namespace PureClarity.Managers
                 var categoryFeed = ConversionManager.ProcessCategories(categories);
                 var feedJSON = JSONSerialization.SerializeToJSON(categoryFeed);
                 var endpoint = RegionEndpoints.GetRegionEndpoints(region);
-                await UploadToSTFP(feedJSON, endpoint.SFTPEndpoint);
+                await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
             catch (Exception e)
@@ -113,7 +113,7 @@ namespace PureClarity.Managers
                 var userFeed = ConversionManager.ProcessUsers(users);
                 var feedJSON = JSONSerialization.SerializeToJSON(userFeed);
                 var endpoint = RegionEndpoints.GetRegionEndpoints(region);
-                await UploadToSTFP(feedJSON, endpoint.SFTPEndpoint);
+                await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
             catch (Exception e)
@@ -122,7 +122,7 @@ namespace PureClarity.Managers
             }
         }
 
-        private async Task UploadToSTFP(string json, string endpoint)
+        private async Task UploadToSTFPAsync(string json, string endpoint)
         {
             var connectionInfo = new ConnectionInfo(endpoint, 2222,
                                                    this.accessKey,
@@ -135,6 +135,26 @@ namespace PureClarity.Managers
                 {
                     await client.UploadAsync(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json");
                 }
+
+                client.Disconnect();
+            }
+        }
+
+        private void UploadToSTFP(string json, string endpoint)
+        {
+            var connectionInfo = new ConnectionInfo(endpoint, 2222,
+                                                   this.accessKey,
+                                                   new[] { new PasswordAuthenticationMethod(this.accessKey, this.secretKey) });
+            using (var client = new SftpClient(connectionInfo))
+            {
+                client.Connect();
+
+                using (MemoryStream jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+                {
+                    client.UploadFile(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json");
+                }
+                
+                client.Disconnect();
             }
         }
     }

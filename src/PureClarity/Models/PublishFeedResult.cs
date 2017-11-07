@@ -6,5 +6,6 @@ namespace PureClarity.Models
     {
         public string Token;
         public string Error;
+        public string StackTrace;
     }
 }
