@@ -63,8 +63,8 @@ namespace PureClarity.Managers
                     Errors = new List<PublishDeltaError> {
                      new PublishDeltaError {
                          Error = e.Message,
-                         Skus = products.Select(prod => prod.Sku),
-                         DeletedSkus = deletedProducts.Select(deletedProd => deletedProd.Sku),
+                         Skus = products.Count() > 0 ? products.Select(prod => prod.Sku) : null,
+                         DeletedSkus = deletedProducts.Count() > 0 ? deletedProducts.Select(deletedProd => deletedProd.Sku) : null,
                          AccountPrices = accountPrices,
                          DeletedAccountPrices = deletedAccountPrices
                          }
@@ -82,7 +82,13 @@ namespace PureClarity.Managers
                 }
                 catch (Exception e)
                 {
-                    publishDeltaResult.Errors.Add(new PublishDeltaError { Error = e.Message, Skus = delta.Products.Select((prod) => prod.Sku) });
+                    publishDeltaResult.Errors.Add(new PublishDeltaError {
+                         Error = e.Message,
+                         Skus = products.Count() > 0 ? products.Select(prod => prod.Sku) : null,
+                         DeletedSkus = deletedProducts.Count() > 0 ? deletedProducts.Select(deletedProd => deletedProd.Sku) : null,
+                         AccountPrices = accountPrices,
+                         DeletedAccountPrices = deletedAccountPrices
+                         });
                 }
             }
 

@@ -45,7 +45,6 @@ namespace PureClarity.Managers
                 processedAccountPrices.Add(processedAccountPrice);
             }
 
-
             return ComposeDeltas.GenerateDeltas(processedProducts, deletedProducts, processedAccountPrices, deletedAccountPrices, accessKey);
         }
 
