@@ -21,5 +21,7 @@ Information on querying tokens.
 
 ### Responses
 
+* [AddItemResult](models/add-item-result)
+* [RemoveItemResult](models/remove-item-result)
 * [PublishResult](models/publish-result)
 * [PublishDeltaResult](models/publish-delta-result)
