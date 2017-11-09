@@ -1,8 +1,8 @@
-## Tokens
+# Query Token Manager
 
 Information on querying tokens.
 
-### Query Token Manager
+## Initialisation
 
 **`new QueryTokenManager(string accessKey, int region)`**
 
@@ -11,7 +11,9 @@ Sets the Access Key and Region to use when making calls to PureClarity. These de
 The Access Key identifies the client.
 The Region is used to select the appropriate endpoints to use.
 
-### Query Token
+## Querying Tokens
+
+### Query Tokens
 
 **`QueryTokensResult QueryTokens(IEnumerable<string> tokens)`**
 

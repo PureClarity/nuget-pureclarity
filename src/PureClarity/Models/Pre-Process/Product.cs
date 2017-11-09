@@ -110,7 +110,7 @@ namespace PureClarity.Models
 
         public ProductVisibility Visibility = ProductVisibility.VISIBILITY_BOTH;
 
-        const string MandatoryFieldMessage = "is a mandatory field";
+        private const string MandatoryFieldMessage = "is a mandatory field";
 
         public Product(string sku, string title, string description, string link, string image, List<string> categories)
         {
