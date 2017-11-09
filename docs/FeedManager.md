@@ -1,6 +1,8 @@
-## Feeds
+# Feed Manager
 
-### FeedManager Constructor
+Information on creating, validating and publishing feeds.
+
+## Initialisation
 
 **`new FeedManager(string accessKey, string secretKey, int region)`**
 
@@ -9,6 +11,9 @@ Sets the Access Key, Secret Key and Region to use when making calls to PureClari
 The Access Key identifies the client.
 The Secret Key is used for authentication when publishing a feed. It should be treated like a password and kept secure at all times.
 The Region is used to select the appropriate endpoints to use.
+
+
+## Adding and Removing Items
 
 
 ### Add Product(s)
@@ -155,6 +160,9 @@ Adds a User (or Users) that you wish to send to PureClarity in a feed to an inte
 Removes a User (or Users) by Id from the internal collection.  If Id is not in the internal collection then this does nothing.
 
 
+## Validating
+
+
 ### Validate Feed
 
 **`FeedValidationResult Validate()`**
@@ -162,6 +170,9 @@ Removes a User (or Users) by Id from the internal collection.  If Id is not in t
 Validates the feed and returns a validation response. The validation response contains whether the feed is valid and, if not valid, provides a list of Ids alongside specific error messages for the Ids for each item type (category/product/user/brand/orders).
 
 This must be called before publishing to verify the feeds are valid. Any changes made to the collections after validation will require that this is called again before publishing.
+
+
+## Publishing
 
 
 ### Publish Feed
@@ -183,6 +194,9 @@ If validation has not yet been called an error will be returned.
 Publishes validated deltas to the PureClarity delta API and returns the publish result alongside returned delta tokens. An async version is provided and is the preferred usage. If Publish(Async) has already been called for this FeedManager instance then this call will not publish the product deltas.
 
 If validation has not yet been called an error will be returned.
+
+
+## Querying the State
 
 ### Collection State
 
