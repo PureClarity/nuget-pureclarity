@@ -7,7 +7,7 @@ Returned as part of a [PublishDeltaResult](models/publish-delta-result) when a d
 Property | Type | Description
 ------------ | ------------- | ------------- 
 Error | string | The error thrown when trying to publish a delta to the API
-Skus | IEnumerable<string> | A list of the SKUs that were in the delta
-DeletedSkus | IEnumerable<string> | A list of the deleted product SKUs that were in the delta
-AccountPrices | IEnumerable<AccountPriceBase> | A list of [AccountPriceBase](models/account-price-base) containing the sku and accountId that were in the delta
-DeletedAccountPrices | IEnumerable<AccountPriceBase> | A list of the deleted [AccountPriceBase](models/account-price-base) containing the sku and accountId that were in the delta
+Skus | IEnumerable\<string> | A list of the SKUs that were in the delta
+DeletedSkus | IEnumerable\<string> | A list of the deleted product SKUs that were in the delta
+AccountPrices | IEnumerable\<AccountPriceBase> | A list of [AccountPriceBase](models/account-price-base) containing the sku and accountId that were in the delta
+DeletedAccountPrices | IEnumerable\<AccountPriceBase> | A list of the deleted [AccountPriceBase](models/account-price-base) containing the sku and accountId that were in the delta
