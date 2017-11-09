@@ -1,10 +1,18 @@
 # PureClarity SDK Documentation
 
-## [Feeds](FeedManager)
+## Managers
+
+### [Feeds](managers/feed-manager)
 
 Information on creating, validating and publishing feeds.
 
 
-## [Tokens](QueryTokenManager)
+### [Tokens](managers/query-token-manager)
 
 Information on querying tokens.
+
+## Models
+
+### [Product](models/product)
+
+Information on the Product object.

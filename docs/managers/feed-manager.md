@@ -196,7 +196,7 @@ Publishes validated deltas to the PureClarity delta API and returns the publish 
 If validation has not yet been called an error will be returned.
 
 
-## Querying the State
+## Querying collection state
 
 ### Collection State
 
