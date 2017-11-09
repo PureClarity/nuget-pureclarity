@@ -81,7 +81,7 @@ namespace PureClarity.Collections
         /// <returns>CollectionState containing useful information</returns>
         public CollectionState<T> GetCollectionState()
         {
-            return new CollectionState<T> { ItemCount = _items.Count, Items = this._items.Values.ToList() };
+            return new CollectionState<T> { ItemCount = _items.Count, Items = this._items.Values.ToList().AsReadOnly() };
         }
     }
 }

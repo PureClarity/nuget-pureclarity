@@ -11,6 +11,6 @@ namespace PureClarity.Models
         /// </summary>
         public int ItemCount;
 
-        public List<T> Items;
+        public IReadOnlyCollection<T> Items;
     }
 }

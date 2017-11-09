@@ -62,11 +62,6 @@ namespace PureClarity.Models
         public bool? NewArrival;
 
         /// <summary>
-        /// Used to group variants together. If set then the record is assumed to be a variant, with a parent product identified by ParentId.
-        /// </summary>
-        public string ParentId;
-
-        /// <summary>
         /// Optional. Controls whether to use the products "default" price when no account price is found for an account. Default (if not present) is false
         /// </summary>
         public bool? NoDefaultPriceForAccounts;
