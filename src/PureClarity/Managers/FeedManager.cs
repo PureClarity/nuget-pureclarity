@@ -222,15 +222,18 @@ namespace PureClarity.Managers
 
         #region Validate
 
-        public FeedValidationResult Validate()
+        public ValidationResult Validate()
         {
-            var validationResult = new FeedValidationResult();
+            var validationResult = new ValidationResult();
             validationResult.ProductValidationResult = _productCollection.Validate();
+            validationResult.AccountPriceValidationResult = _accountPriceCollection.Validate();
             validationResult.CategoryValidationResult = _categoryCollection.Validate();
             //validationResult.BrandValidationResult = _brandCollection.Validate();
             validationResult.UserValidationResult = _userCollection.Validate();
+
             validationResult.Success = validationResult.ProductValidationResult.Success
-            && validationResult.CategoryValidationResult.Success
+            && validationResult.AccountPriceValidationResult.Success
+            && validationResult.CategoryValidationResult.Success            
             //&& validationResult.BrandValidationResult.Success;
             && validationResult.UserValidationResult.Success;
 

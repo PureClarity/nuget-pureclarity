@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace PureClarity.Models
 {
-    public class ValidationResult : PCResultBase
+    public class CollectionValidationResult : PCResultBase
     {
         public IDictionary<string, IEnumerable<string>> InvalidRecords;
     }

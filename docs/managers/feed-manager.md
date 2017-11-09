@@ -193,11 +193,13 @@ Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IE
 
 ### Validate Feed
 
-**`FeedValidationResult Validate()`**
+**`ValidationResult Validate()`**
 
 Validates the feed and returns a validation response. The validation response contains whether the feed is valid and, if not valid, provides a list of Ids alongside specific error messages for the Ids for each item type (category/product/user/brand/orders).
 
 This must be called before publishing to verify the feeds are valid. Any changes made to the collections after validation will require that this is called again before publishing.
+
+Returns a [ValidationResult](/nuget-pureclarity/models/validation-result) on completion.
 
 
 ## Publishing

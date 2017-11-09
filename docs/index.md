@@ -14,14 +14,15 @@ Information on querying tokens.
 ## Models
 
 
-### Collection items
+### Collection Objects
 
 * [Product](models/product)
 * [CollectionState](models/collection-state)
 
-### Responses
+### Returned Objects
 
 * [AddItemResult](models/add-item-result)
 * [RemoveItemResult](models/remove-item-result)
+* [ValidationResult](models/validation-result)
 * [PublishResult](models/publish-result)
 * [PublishDeltaResult](models/publish-delta-result)

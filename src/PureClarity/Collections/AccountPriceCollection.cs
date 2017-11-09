@@ -9,9 +9,9 @@ namespace PureClarity.Collections
 {
     internal class AccountPriceCollection : PCCollection<AccountPrice>
     {
-        public override ValidationResult Validate()
+        public override CollectionValidationResult Validate()
         {
-            throw new NotImplementedException();
+            return new CollectionValidationResult { Success = true };
         }
     }
 }
