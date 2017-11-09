@@ -1,10 +1,10 @@
 # PureClarity SDK Documentation
 
-## [Feeds](~/FeedManager)
+## [Feeds](FeedManager)
 
 Information on creating, validating and publishing feeds.
 
 
-## [Tokens](~/QueryTokenManager)
+## [Tokens](QueryTokenManager)
 
 Information on querying tokens.
