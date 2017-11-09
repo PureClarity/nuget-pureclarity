@@ -218,4 +218,4 @@ Returns [PublishDeltaResult](/nuget-pureclarity/models/publish-delta-result) on 
 
 **`CollectionState<User> GetUserCollectionState()`**
 
-Returns the state of the internal collection. This includes item count and a read only collection of the items added so far (items that did not return an error in the AddItemResult object);
+Returns the state of the internal collection as a [CollectionState](/nuget-pureclarity/models/collection-state) object.
