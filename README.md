@@ -206,7 +206,7 @@ If validation has not yet been called an error will be returned.
 
 **`CollectionState<User> GetUserCollectionState()`**
 
-Returns the state of the internal collection. This includes item count and a read only collection of the items added so far (that did not return an error in the AddItemResult object);
+Returns the state of the internal collection. This includes item count and a read only collection of the items added so far (items that did not return an error in the AddItemResult object);
 
 
 
