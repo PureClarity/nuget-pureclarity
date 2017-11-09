@@ -17,6 +17,7 @@ Information on querying tokens.
 ### Collection items
 
 * [Product](models/product)
+* [CollectionState](models/collection-state)
 
 ### Responses
 
