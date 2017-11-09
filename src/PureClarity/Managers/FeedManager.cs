@@ -23,7 +23,14 @@ namespace PureClarity.Managers
 
         private bool _productsPushed;
 
+        private bool _feedsValid = false;
 
+        /// <summary>
+        /// Initialises the Feed Manager
+        /// </summary>
+        /// <param name="accessKey">The access key identifies the client</param>
+        /// <param name="secretKey">The secret key is used for authentication when publishing a feed</param>
+        /// <param name="region">The region defines the endpoints that are used and thus matches the geo region in which the clients PureClarity instance lives</param>
         public FeedManager(string accessKey, string secretKey, int region)
         {
             _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
@@ -41,59 +48,175 @@ namespace PureClarity.Managers
 
         #region Add
 
-        public AddItemResult AddProduct(Product product) => _productCollection.AddItem(product);
-        public IEnumerable<AddItemResult> AddProducts(IEnumerable<Product> products) => _productCollection.AddItems(products);
+        public AddItemResult AddProduct(Product product)
+        {
+            _feedsValid = false;
+            return _productCollection.AddItem(product);
+        }
+        public IEnumerable<AddItemResult> AddProducts(IEnumerable<Product> products)
+        {
+            _feedsValid = false;
+            return _productCollection.AddItems(products);
+        }
 
         public AddItemResult AddDeletedProductSku(string productSku)
         {
+            _feedsValid = false;
             return _deletedProductCollection.AddItem(new DeletedProductSku(productSku));
         }
 
         public IEnumerable<AddItemResult> AddDeletedProductSkus(IEnumerable<string> productSkus)
         {
+            _feedsValid = false;
             return _deletedProductCollection.AddItems(productSkus.Select((sku) => { return new DeletedProductSku(sku); }));
         }
 
-        public AddItemResult AddCategory(Category category) => _categoryCollection.AddItem(category);
-        public IEnumerable<AddItemResult> AddCategories(IEnumerable<Category> categories) => _categoryCollection.AddItems(categories);
+        public AddItemResult AddCategory(Category category)
+        {
+            _feedsValid = false;
+            return _categoryCollection.AddItem(category);
+        }
+        public IEnumerable<AddItemResult> AddCategories(IEnumerable<Category> categories)
+        {
+            _feedsValid = false;
+            return _categoryCollection.AddItems(categories);
+        }
 
-        public AddItemResult AddBrand(Brand brand) => _brandCollection.AddItem(brand);
-        public IEnumerable<AddItemResult> AddBrands(IEnumerable<Brand> brands) => _brandCollection.AddItems(brands);
+        public AddItemResult AddBrand(Brand brand)
+        {
+            _feedsValid = false;
+            return _brandCollection.AddItem(brand);
+        }
+        public IEnumerable<AddItemResult> AddBrands(IEnumerable<Brand> brands)
+        {
+            _feedsValid = false;
+            return _brandCollection.AddItems(brands);
+        }
 
-        public AddItemResult AddAccountPrice(AccountPrice accountPrice) => _accountPriceCollection.AddItem(accountPrice);
-        public IEnumerable<AddItemResult> AddAccountPrices(IEnumerable<AccountPrice> accountPrices) => _accountPriceCollection.AddItems(accountPrices);
+        public AddItemResult AddAccountPrice(AccountPrice accountPrice)
+        {
+            _feedsValid = false;
+            return _accountPriceCollection.AddItem(accountPrice);
+        }
+        public IEnumerable<AddItemResult> AddAccountPrices(IEnumerable<AccountPrice> accountPrices)
+        {
+            _feedsValid = false;
+            return _accountPriceCollection.AddItems(accountPrices);
+        }
 
-        public AddItemResult AddDeletedAccountPrice(DeletedAccountPrice deletedAccountPrice) => _deletedAccountPriceCollection.AddItem(deletedAccountPrice);
-        public IEnumerable<AddItemResult> AddDeletedAccountPrices(IEnumerable<DeletedAccountPrice> deletedAccountPrices) => _deletedAccountPriceCollection.AddItems(deletedAccountPrices);
+        public AddItemResult AddDeletedAccountPrice(DeletedAccountPrice deletedAccountPrice)
+        {
+            _feedsValid = false;
+            return _deletedAccountPriceCollection.AddItem(deletedAccountPrice);
+        }
+        public IEnumerable<AddItemResult> AddDeletedAccountPrices(IEnumerable<DeletedAccountPrice> deletedAccountPrices)
+        {
+            _feedsValid = false;
+            return _deletedAccountPriceCollection.AddItems(deletedAccountPrices);
+        }
 
-        public AddItemResult AddUser(User user) => _userCollection.AddItem(user);
-        public IEnumerable<AddItemResult> AddUsers(IEnumerable<User> users) => _userCollection.AddItems(users);
+        public AddItemResult AddUser(User user)
+        {
+            _feedsValid = false;
+            return _userCollection.AddItem(user);
+        }
+        public IEnumerable<AddItemResult> AddUsers(IEnumerable<User> users)
+        {
+            _feedsValid = false;
+            return _userCollection.AddItems(users);
+        }
 
         #endregion
 
         #region Remove
 
-        public RemoveItemResult<Product> RemoveProduct(string productSku) => _productCollection.RemoveItemFromCollection(productSku);
-        public IEnumerable<RemoveItemResult<Product>> RemoveProducts(IEnumerable<string> productSkus) => _productCollection.RemoveItemsFromCollection(productSkus);
+        public RemoveItemResult<Product> RemoveProduct(string productSku)
+        {
+            _feedsValid = false;
+            return _productCollection.RemoveItemFromCollection(productSku);
+        }
+        public IEnumerable<RemoveItemResult<Product>> RemoveProducts(IEnumerable<string> productSkus)
+        {
+            _feedsValid = false;
+            return _productCollection.RemoveItemsFromCollection(productSkus);
+        }
 
-        public RemoveItemResult<DeletedProductSku> RemoveDeletedProductSku(string productSku) => _deletedProductCollection.RemoveItemFromCollection(productSku);
-        public IEnumerable<RemoveItemResult<DeletedProductSku>> RemoveDeletedProductSkus(IEnumerable<string> productSkus) => _deletedProductCollection.RemoveItemsFromCollection(productSkus);
+        public RemoveItemResult<DeletedProductSku> RemoveDeletedProductSku(string productSku)
+        {
+            _feedsValid = false;
+            return _deletedProductCollection.RemoveItemFromCollection(productSku);
+        }
+        public IEnumerable<RemoveItemResult<DeletedProductSku>> RemoveDeletedProductSkus(IEnumerable<string> productSkus)
+        {
+            _feedsValid = false;
+            return _deletedProductCollection.RemoveItemsFromCollection(productSkus);
+        }
 
-        public RemoveItemResult<Category> RemoveCategory(string categoryId) => _categoryCollection.RemoveItemFromCollection(categoryId);
-        public IEnumerable<RemoveItemResult<Category>> RemoveCategories(IEnumerable<string> categoryIds) => _categoryCollection.RemoveItemsFromCollection(categoryIds);
+        public RemoveItemResult<Category> RemoveCategory(string categoryId)
+        {
+            _feedsValid = false;
+            return _categoryCollection.RemoveItemFromCollection(categoryId);
+        }
+        public IEnumerable<RemoveItemResult<Category>> RemoveCategories(IEnumerable<string> categoryIds)
+        {
+            _feedsValid = false;
+            return _categoryCollection.RemoveItemsFromCollection(categoryIds);
+        }
 
-        public RemoveItemResult<Brand> RemoveBrand(string brandId) => _brandCollection.RemoveItemFromCollection(brandId);
-        public IEnumerable<RemoveItemResult<Brand>> RemoveBrands(IEnumerable<string> brandIds) => _brandCollection.RemoveItemsFromCollection(brandIds);
+        public RemoveItemResult<Brand> RemoveBrand(string brandId)
+        {
+            _feedsValid = false;
+            return _brandCollection.RemoveItemFromCollection(brandId);
+        }
+        public IEnumerable<RemoveItemResult<Brand>> RemoveBrands(IEnumerable<string> brandIds)
+        {
+            _feedsValid = false;
+            return _brandCollection.RemoveItemsFromCollection(brandIds);
+        }
 
-        public RemoveItemResult<AccountPrice> RemoveAccountPrice(string accountPriceId) => _accountPriceCollection.RemoveItemFromCollection(accountPriceId);
-        public IEnumerable<RemoveItemResult<AccountPrice>> RemoveAccountPrices(IEnumerable<string> accountPriceIds) => _accountPriceCollection.RemoveItemsFromCollection(accountPriceIds);
+        public RemoveItemResult<AccountPrice> RemoveAccountPrice(string accountPriceId)
+        {
+            _feedsValid = false;
+            return _accountPriceCollection.RemoveItemFromCollection(accountPriceId);
+        }
+        public RemoveItemResult<AccountPrice> RemoveAccountPrice(string accountId, string sku)
+        {
+            _feedsValid = false;
+            return _accountPriceCollection.RemoveItemFromCollection($"{accountId}|{sku}");
+        }
+        public IEnumerable<RemoveItemResult<AccountPrice>> RemoveAccountPrices(IEnumerable<string> accountPriceIds)
+        {
+            _feedsValid = false;
+            return _accountPriceCollection.RemoveItemsFromCollection(accountPriceIds);
+        }
 
-        public RemoveItemResult<DeletedAccountPrice> RemoveDeletedAccountPrice(string deletedAccountPriceId) => _deletedAccountPriceCollection.RemoveItemFromCollection(deletedAccountPriceId);
-        public IEnumerable<RemoveItemResult<DeletedAccountPrice>> RemoveDeletedAccountPrices(IEnumerable<string> deletedAccountPriceIds) => _deletedAccountPriceCollection.RemoveItemsFromCollection(deletedAccountPriceIds);
+        public RemoveItemResult<DeletedAccountPrice> RemoveDeletedAccountPrice(string deletedAccountPriceId)
+        {
+            _feedsValid = false;
+            return _deletedAccountPriceCollection.RemoveItemFromCollection(deletedAccountPriceId);
+        }
+        public RemoveItemResult<DeletedAccountPrice> RemoveDeletedAccountPrice(string accountId, string sku)
+        {
+            _feedsValid = false;
+            return _deletedAccountPriceCollection.RemoveItemFromCollection($"{accountId}|{sku}");
+        }
+        public IEnumerable<RemoveItemResult<DeletedAccountPrice>> RemoveDeletedAccountPrices(IEnumerable<string> deletedAccountPriceIds)
+        {
+            _feedsValid = false;
+            return _deletedAccountPriceCollection.RemoveItemsFromCollection(deletedAccountPriceIds);
+        }
 
 
-        public RemoveItemResult<User> RemoveUser(string userId) => _userCollection.RemoveItemFromCollection(userId);
-        public IEnumerable<RemoveItemResult<User>> RemoveUser(IEnumerable<string> userIds) => _userCollection.RemoveItemsFromCollection(userIds);
+        public RemoveItemResult<User> RemoveUser(string userId)
+        {
+            _feedsValid = false;
+            return _userCollection.RemoveItemFromCollection(userId);
+        }
+        public IEnumerable<RemoveItemResult<User>> RemoveUser(IEnumerable<string> userIds)
+        {
+            _feedsValid = false;
+            return _userCollection.RemoveItemsFromCollection(userIds);
+        }
 
         #endregion
 
@@ -111,6 +234,8 @@ namespace PureClarity.Managers
             //&& validationResult.BrandValidationResult.Success;
             && validationResult.UserValidationResult.Success;
 
+            _feedsValid = validationResult.Success;
+
             return validationResult;
         }
 
@@ -120,6 +245,11 @@ namespace PureClarity.Managers
 
         public PublishResult Publish()
         {
+            if (!_feedsValid)
+            {
+                return new PublishResult { Success = false, Error = "Feeds not yet successfully validated" };
+            }
+
             var publishManager = new PublishManager(_accessKey, _secretKey, _region);
             var publishResult = new PublishResult();
 
@@ -148,6 +278,11 @@ namespace PureClarity.Managers
 
         public async Task<PublishResult> PublishAsync()
         {
+            if (!_feedsValid)
+            {
+                return new PublishResult { Success = false, Error = "Feeds not yet successfully validated" };
+            }
+
             var publishManager = new PublishManager(_accessKey, _secretKey, _region);
             var publishResult = new PublishResult();
 
@@ -176,6 +311,11 @@ namespace PureClarity.Managers
 
         public PublishDeltaResult PublishDeltas()
         {
+            if (!_feedsValid)
+            {
+                return new PublishDeltaResult { Success = false, Error = "Feeds not yet successfully validated" };
+            }
+
             var publishManager = new PublishManager(_accessKey, _secretKey, _region);
             var publishResult = new PublishDeltaResult();
 
@@ -191,6 +331,11 @@ namespace PureClarity.Managers
 
         public async Task<PublishDeltaResult> PublishDeltasAsync()
         {
+            if (!_feedsValid)
+            {
+                return new PublishDeltaResult { Success = false, Error = "Feeds not yet successfully validated" };
+            }
+
             var publishManager = new PublishManager(_accessKey, _secretKey, _region);
             var publishResult = new PublishDeltaResult();
 
@@ -203,16 +348,17 @@ namespace PureClarity.Managers
             return publishResult;
         }
 
-
-
         #endregion
 
         #region CollectionState
 
-        public CollectionState GetProductCollectionState() => _productCollection.GetCollectionState();
-        public CollectionState GetCategoryCollectionState() => _categoryCollection.GetCollectionState();
-        public CollectionState GetBrandCollectionState() => _brandCollection.GetCollectionState();
-        public CollectionState GetUserCollectionState() => _userCollection.GetCollectionState();
+        public CollectionState<Product> GetProductCollectionState() => _productCollection.GetCollectionState();
+        public CollectionState<DeletedProductSku> GetDeletedProductCollectionState() => _deletedProductCollection.GetCollectionState();
+        public CollectionState<AccountPrice> GetAccountPriceCollectionState() => _accountPriceCollection.GetCollectionState();
+        public CollectionState<DeletedAccountPrice> GetDeletedAccountPriceCollectionState() => _deletedAccountPriceCollection.GetCollectionState();
+        public CollectionState<Category> GetCategoryCollectionState() => _categoryCollection.GetCollectionState();
+        public CollectionState<Brand> GetBrandCollectionState() => _brandCollection.GetCollectionState();
+        public CollectionState<User> GetUserCollectionState() => _userCollection.GetCollectionState();
 
 
         #endregion

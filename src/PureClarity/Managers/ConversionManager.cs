@@ -45,7 +45,6 @@ namespace PureClarity.Managers
                 processedAccountPrices.Add(processedAccountPrice);
             }
 
-
             return ComposeDeltas.GenerateDeltas(processedProducts, deletedProducts, processedAccountPrices, deletedAccountPrices, accessKey);
         }
 
@@ -113,7 +112,6 @@ namespace PureClarity.Managers
                 NewArrival = product.NewArrival,
                 NoDefaultPriceForAccounts = product.NoDefaultPriceForAccounts,
                 OnOffer = product.OnOffer,
-                SearchTags = product.SearchTags?.ToArray(),
                 Sku = product.Sku,
                 Title = product.Title,
                 AssociatedTitles = new[] { product.Title },
@@ -122,27 +120,61 @@ namespace PureClarity.Managers
 
             var associatedSkus = new List<string> { product.Sku };
             var associatedTitles = new List<string> { product.Title };
+            var searchTags = product.SearchTags ?? new List<string>();
             var prices = product.Prices.Count != 0 ? product.Prices : new List<Price>();
             var salePrices = product.SalePrices.Count != 0 ? product.SalePrices : new List<Price>();
 
+            var attributes = new Dictionary<string, JToken>();
             foreach (var variant in product.Variants)
             {
                 associatedSkus.Add(variant.Sku);
                 associatedTitles.Add(variant.Title);
+                if (variant.SearchTags != null)
+                {
+                    searchTags.AddRange(variant.SearchTags);
+                }
                 prices.AddRange(variant.Prices);
                 salePrices.AddRange(variant.SalePrices);
+
+                foreach (var attr in variant.Attributes)
+                {
+                    var values = attr.Value.Where(val => !string.IsNullOrWhiteSpace(val)).Select((value) => { return WebUtility.HtmlEncode(value); });
+                    if (values.Count() > 0)
+                    {
+                        if (attributes.ContainsKey(WebUtility.HtmlEncode(attr.Key)))
+                        {
+                            var oldValues = attributes[WebUtility.HtmlEncode(attr.Key)].Select(x => x.ToString()).ToList();
+                            attributes[WebUtility.HtmlEncode(attr.Key)] = new JArray(oldValues.Concat(values).Distinct());
+                        }
+                        else
+                        {
+                            attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                        }
+                    }
+                }
             }
 
             processedProduct.AssociatedSkus = associatedSkus.ToArray();
             processedProduct.AssociatedTitles = associatedTitles.ToArray();
+            processedProduct.SearchTags = searchTags.ToArray();
             processedProduct.Prices = ProcessPrices(prices);
             processedProduct.SalePrices = ProcessPrices(salePrices);
 
-            var attributes = new Dictionary<string, JToken>();
             foreach (var attr in product.Attributes)
             {
-                var values = attr.Value.Select((value) => { return WebUtility.HtmlEncode(value); });
-                attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                var values = attr.Value.Where(val => !string.IsNullOrWhiteSpace(val)).Select((value) => { return WebUtility.HtmlEncode(value); });
+                if (values.Count() > 0)
+                {
+                    if (attributes.ContainsKey(WebUtility.HtmlEncode(attr.Key)))
+                    {
+                        var oldValues = attributes[WebUtility.HtmlEncode(attr.Key)].Select(x => x.ToString()).ToList();
+                        attributes[WebUtility.HtmlEncode(attr.Key)] = new JArray(oldValues.Concat(values).Distinct());
+                    }
+                    else
+                    {
+                        attributes.Add(WebUtility.HtmlEncode(attr.Key), new JArray(values));
+                    }
+                }
             }
 
             processedProduct.Attributes = attributes;
@@ -167,7 +199,7 @@ namespace PureClarity.Managers
                 convertedPrices.Add($"{price.Value} {price.Currency}");
             }
 
-            return convertedPrices.ToArray();
+            return convertedPrices.Count() > 0 ? convertedPrices.ToArray() : null;
         }
     }
 }

@@ -133,7 +133,7 @@ namespace PureClarity.Helpers
                 deltasValid = accountPricePartitions.All((partition) =>
                 {
                     var feed = new ProcessedProductDelta(appKey);
-                    feed.DeletedAccountPrices = partition.ToArray();
+                    feed.DeleteAccountPrices = partition.ToArray();
                     validAccountPriceDeltas.Add(feed);
                     var deltaTotal = JSONSerialization.GetByteSizeOfObject(feed);
                     return deltaTotal < _maxDeltaSize;

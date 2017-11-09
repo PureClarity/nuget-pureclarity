@@ -31,30 +31,42 @@ namespace PureClarity.Collections
                 if (_items.ContainsKey(item.ParentId))
                 {
                     var parentProduct = _items[item.ParentId];
-                    parentProduct.Variants.Add(item);
 
-                    _items.AddOrUpdate(item.Id, item, (key, previousItem) =>
+                    if (parentProduct.Variants.All((var) => { return var.Id != item.Id; }))
+                    {
+                        parentProduct.Variants.Add(item);
+                        _items.AddOrUpdate(parentProduct.Id, parentProduct, (key, previousItem) =>
+                        {
+                            return parentProduct;
+                        });
+                    }
+                    else
                     {
                         result.Success = false;
                         result.Error = $"Duplicate item found: {item.Id}. Newest item not added.";
-                        return previousItem;
-                    });
+                    }
                 }
                 else if (_variantsAwaitingParents.ContainsKey(item.ParentId))
                 {
                     var existingList = _variantsAwaitingParents[item.ParentId];
-                    existingList.Add(item);
 
-                    _variantsAwaitingParents.AddOrUpdate(item.ParentId, existingList, (key, previousItem) =>
-                       {
-                           result.Success = false;
-                           result.Error = $"Duplicate item found: {item.Id}. Newest item not added.";
-                           return previousItem;
-                       });
+                    if (existingList.All((var) => { return var.Id != item.Id; }))
+                    {
+                        existingList.Add(item);
+                        _variantsAwaitingParents.AddOrUpdate(item.ParentId, existingList, (key, previousItem) =>
+                        {
+                            return existingList;
+                        });
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Error = $"Duplicate item found: {item.Id}. Newest item not added.";
+                    }
                 }
                 else
                 {
-                    _variantsAwaitingParents.AddOrUpdate(item.Id, new List<Product> { item }, (key, previousItem) =>
+                    _variantsAwaitingParents.AddOrUpdate(item.ParentId, new List<Product> { item }, (key, previousItem) =>
                        {
                            result.Success = false;
                            result.Error = $"Duplicate item found: {item.Id}. Newest item not added.";

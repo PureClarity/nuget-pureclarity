@@ -27,7 +27,7 @@ namespace PureClarity.Helpers
                 }
                 else
                 {
-                    throw new Exception($"Request failure for object {typeof(T)}: POST Status {response.StatusCode} returned for {postUrl} with payload {bodyToPost}");
+                    throw new Exception($"Request failure for object {typeof(T)}: POST Status {response.StatusCode} with body {await response.Content.ReadAsStringAsync()} returned for {postUrl} with payload {bodyToPost}");
                 }
 
                 return result;

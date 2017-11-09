@@ -79,9 +79,9 @@ namespace PureClarity.Collections
         /// Gets useful information on the internal state of the collection
         /// </summary>
         /// <returns>CollectionState containing useful information</returns>
-        public CollectionState GetCollectionState()
+        public CollectionState<T> GetCollectionState()
         {
-            return new CollectionState { ItemCount = _items.Count };
+            return new CollectionState<T> { ItemCount = _items.Count, Items = this._items.Values.ToList().AsReadOnly() };
         }
     }
 }

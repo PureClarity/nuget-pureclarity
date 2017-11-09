@@ -91,6 +91,11 @@ namespace PureClarity.Validators
         {
             var priceErrors = new List<string>();
 
+            if (Currencies.Count == 0)
+            {
+                priceErrors.Add($"No currencies found");
+            }
+
             if (product.Prices.Count > 0)
             {
                 ValidateCurrencies(product.Prices, ref priceErrors, false);
@@ -114,6 +119,10 @@ namespace PureClarity.Validators
                     {
                         ValidateCurrencies(variant.Prices, ref priceErrors, false);
                     }
+                    else
+                    {
+                        priceErrors.Add($"Variant {variant.Sku} has no prices. A variant must have prices");
+                    }
 
                     if (variant.SalePrices.Count > 0)
                     {
@@ -126,7 +135,6 @@ namespace PureClarity.Validators
                     }
                 }
             }
-
 
             return priceErrors;
         }

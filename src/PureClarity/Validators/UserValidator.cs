@@ -10,8 +10,8 @@ namespace PureClarity.Validators
     {
         public static bool IsDOBValid(string dob)
         {
-            var valid = !string.IsNullOrWhiteSpace(dob);
-            if (valid)
+            var valid = dob == null || !string.IsNullOrWhiteSpace(dob);
+            if (!string.IsNullOrWhiteSpace(dob))
             {
                 //Check format is dd/MM/yyyy
                 var dobRegex = new Regex(@"\d\d\/\d\d\/\d\d\d\d", RegexOptions.Compiled | RegexOptions.IgnoreCase);

@@ -29,12 +29,12 @@ namespace PureClarity.Models
         /// <summary>
         /// Optional. Custom attributes for use in segmentation and rules
         /// </summary>        
-        public IDictionary<string, IEnumerable<string>> CustomFields { get; set; }
+        public IDictionary<string, List<string>> CustomFields { get; set; }
 
         public User(string userId)
         {
             UserId = userId ?? throw new ArgumentNullException(nameof(userId));
-            CustomFields = new Dictionary<string, IEnumerable<string>>();
+            CustomFields = new Dictionary<string, List<string>>();
         }        
         
     }

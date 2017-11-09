@@ -6,4 +6,13 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="SSH.NET" Version="2016.1.0" />
   </ItemGroup>
+  <PropertyGroup>
+        <Description>An SDK for sending PureClarity feeds/deltas and querying delta status.</Description>
+        <Authors>PureClarity</Authors>
+        <Title>PureClarity</Title>
+        <PackageIconUrl>https://s3-eu-west-1.amazonaws.com/pureclarity-media/pureclarity.png</PackageIconUrl>
+        <PackageProjectUrl>https://github.com/PureClarity/nuget-pureclarity</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/PureClarity/nuget-pureclarity</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+</PropertyGroup>
 </Project>

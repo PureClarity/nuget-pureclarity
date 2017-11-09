@@ -9,7 +9,7 @@ namespace PureClarity.Models
         public ProcessedProduct[] Products;
         public string[] DeleteProducts;
         public ProcessedAccountPrice[] AccountPrices;
-        public DeletedAccountPrice[] DeletedAccountPrices;
+        public DeletedAccountPrice[] DeleteAccountPrices;
 
         public ProcessedProductDelta(string appKey)
         {
