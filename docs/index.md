@@ -13,6 +13,11 @@ Information on querying tokens.
 
 ## Models
 
-### [Product](models/product)
 
-Information on the Product object.
+### Collection items
+
+* [Product](models/product)
+
+### Responses
+
+* [PublishDeltaResult](models/publish-delta-result)

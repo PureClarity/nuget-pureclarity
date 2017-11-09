@@ -195,6 +195,8 @@ Publishes validated deltas to the PureClarity delta API and returns the publish 
 
 If validation has not yet been called an error will be returned.
 
+Returns [PublishDeltaResult](models/publish-delta-result) on completion.
+
 
 ## Querying collection state
 
