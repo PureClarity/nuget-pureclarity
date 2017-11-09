@@ -1,6 +1,6 @@
 # Product
 
-Object structure and remarks.
+Structured object for representing a product in PureClarity.
 
 ## Naming Remarks
 
