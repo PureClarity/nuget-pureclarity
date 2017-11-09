@@ -75,6 +75,7 @@ Adds an account price (or account prices) that you wish to send to PureClarity i
 ### Remove Account Price(s)
 
 **`RemoveItemResult<AccountPrice> RemoveAccountPrice(string accountPriceId)`**
+
 **`RemoveItemResult<AccountPrice> RemoveAccountPrice(string accountId, string sku)`**
 
 **`IEnumerable<RemoveItemResult<AccountPrice>> RemoveAccountPrices(IEnumerable<string> accountPriceIds)`**
@@ -96,6 +97,7 @@ Adds a deleted account price (or deleted account prices) that you wish to send t
 ### Remove Deleted Account Price(s)
 
 **`RemoveItemResult<DeletedAccountPrice> RemoveDeletedAccountPrice(string deletedAccountPriceId)`**
+
 **`RemoveItemResult<DeletedAccountPrice> RemoveAccountPrice(string accountId, string sku)`**
 
 **`IEnumerable<RemoveItemResult<DeletedAccountPrice>> RemoveDeletedAccountPrices(IEnumerable<string> deletedAccountPriceIds)`**
@@ -171,6 +173,7 @@ This must be called before publishing to verify the feeds are valid. Any changes
 ### Publish Feed
 
 **`PublishResult Publish()`**
+
 **`Task<PublishResult> PublishAsync()`**
 
 Publishes validated feeds to the PureClarity SFTP server and returns the publish result. An async version is provided and is the preferred usage. If PublishDeltas(Async) has already been called for this FeedManager instance then this call will not publish the product feed. Other available feeds will be published.
@@ -180,6 +183,7 @@ If validation has not yet been called an error will be returned.
 ### Publish Deltas
 
 **`PublishDeltaResult PublishDeltas()`**
+
 **`Task<PublishDeltaResult> PublishDeltasAsync()`**
 
 Publishes validated deltas to the PureClarity delta API and returns the publish result alongside returned delta tokens. An async version is provided and is the preferred usage. If Publish(Async) has already been called for this FeedManager instance then this call will not publish the product deltas.
@@ -189,11 +193,17 @@ If validation has not yet been called an error will be returned.
 ### Collection State
 
 **`CollectionState<Product> GetProductCollectionState()`**
+
 **`CollectionState<DeletedProductSku> GetDeletedProductCollectionState()`**
+
 **`CollectionState<AccountPrice> GetAccountPriceCollectionState()`**
+
 **`CollectionState<DeletedAccountPrice> GetDeletedAccountPriceCollectionState()`**
+
 **`CollectionState<Category> GetCategoryCollectionState()`**
+
 **`CollectionState<Brand> GetBrandCollectionState()`**
+
 **`CollectionState<User> GetUserCollectionState()`**
 
 Returns the state of the internal collection. This includes item count and a read only collection of the items added so far (that did not return an error in the AddItemResult object);
@@ -215,6 +225,7 @@ The Region is used to select the appropriate endpoints to use.
 ### Query Token
 
 **`QueryTokensResult QueryTokens(IEnumerable<string> tokens)`**
+
 **`Task<QueryTokensResult> QueryTokensAsync(IEnumerable<string> tokens)`**
 
 Queries the status of the product deltas based on the tokens returned when they were published. An async version is provided and is the preferred usage.
