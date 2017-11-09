@@ -32,6 +32,8 @@ There are no limitations on the order for adding variants  for products:
 
 Note that when you call the validation step it will return a status of false if a variant is added and no matching parent product is added before validation. An invalid record message will be provided stating the variant Id and the missing product Id.
 
+Returns an [AddItemResult](/nuget-pureclarity/models/add-item-result) or IEnumerable\<[AddItemResult](/nuget-pureclarity/models/add-item-result)>.
+
 
 ### Remove Product(s)
 
@@ -40,6 +42,8 @@ Note that when you call the validation step it will return a status of false if 
 **`IEnumerable<RemoveItemResult<Product>> RemoveProducts(IEnumerable<string> productSkus)`**
 
 Removes a product (or products) by Sku from the internal collection. If Sku is not in the internal collection then this does nothing.
+
+Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
 ### Add Deleted Product Sku(s)
@@ -52,6 +56,8 @@ Adds a deleted product (or deleted products) sku that you wish to send to PureCl
 
 This is used to send the sku of a product which you no longer want PureClarity to show. It is only required for a delta. A full feed does not require this.
 
+Returns an [AddItemResult](/nuget-pureclarity/models/add-item-result) or IEnumerable\<[AddItemResult](/nuget-pureclarity/models/add-item-result)>.
+
 
 ### Remove Deleted Product Sku(s)
 
@@ -60,6 +66,8 @@ This is used to send the sku of a product which you no longer want PureClarity t
 **`IEnumerable<RemoveItemResult<DeletedProductSku>> RemoveDeletedProductSkus(IEnumerable<string> productSkus)`**
 
 Removes a deleted product (or deleted products) by Sku from the internal collection. If Sku is not in the internal collection then this does nothing.
+
+Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
 ### Add Account Price(s)
@@ -70,6 +78,7 @@ Removes a deleted product (or deleted products) by Sku from the internal collect
 
 Adds an account price (or account prices) that you wish to send to PureClarity in a feed to an internal collection. If an account price with the same combination of Account Id and Sku has already been added then the AddItemResult will return with Success: false and an error. 
 
+Returns an [AddItemResult](/nuget-pureclarity/models/add-item-result) or IEnumerable\<[AddItemResult](/nuget-pureclarity/models/add-item-result)>.
 
 ### Remove Account Price(s)
 
@@ -83,6 +92,8 @@ Removes an account price by account price Id or by account Id and sku from the i
 
 Account price id is a string in the format of "\<accountId>|\<sku>"
 
+Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
+
 
 ### Add Deleted Account Price(s)
  
@@ -92,6 +103,7 @@ Account price id is a string in the format of "\<accountId>|\<sku>"
 
 Adds a deleted account price (or deleted account prices) that you wish to send to PureClarity in a feed to an internal collection. If a deleted account price with the same combination of Account Id and Sku has already been added then the AddItemResult will return with Success: false and an error. 
 
+Returns an [AddItemResult](/nuget-pureclarity/models/add-item-result) or IEnumerable\<[AddItemResult](/nuget-pureclarity/models/add-item-result)>.
 
 ### Remove Deleted Account Price(s)
 
@@ -105,7 +117,9 @@ Removes a deleted account price by account price Id or by account Id and sku fro
 
 This is used to send the account id and sku for an account price which you no longer want PureClarity to show. It is only required for a delta. A full feed does not require this.
 
-Account price id is a string in the format of "\<accountId>|\<sku>"
+Account price id is a string in the format of "\<accountId>|\<sku>".
+
+Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
 ### Add Category(ies)
@@ -116,6 +130,8 @@ Account price id is a string in the format of "\<accountId>|\<sku>"
 
 Adds a Category (or Categories) that you wish to send to PureClarity in a feed to an internal collection. If a Category with the same Id has already been added then the AddItemResult will return with Success: false and an error.
 
+Returns an [AddItemResult](/nuget-pureclarity/models/add-item-result) or IEnumerable\<[AddItemResult](/nuget-pureclarity/models/add-item-result)>.
+
 
 ### Remove Category(ies)
 
@@ -124,6 +140,8 @@ Adds a Category (or Categories) that you wish to send to PureClarity in a feed t
 **`IEnumerable<RemoveItemResult<Category>> RemoveCategories(IEnumerable<string> categoryIds)`**
 
 Removes a Category (or Categories) by Id from the internal collection. If Id is not in the internal collection then this does nothing.
+
+Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
 ### Add Brand(s)
@@ -134,6 +152,9 @@ Removes a Category (or Categories) by Id from the internal collection. If Id is 
 
 Adds a Brand (or Brands) that you wish to send to PureClarity in a feed to an internal collection. If a Brand with the same Id has already been added then the AddItemResult will return with Success: false and an error.
 
+Returns an [AddItemResult](/nuget-pureclarity/models/add-item-result) or IEnumerable\<[AddItemResult](/nuget-pureclarity/models/add-item-result)>.
+
+
 ### Remove Brand(s)
 
 **`RemoveItemResult<Brand> RemoveBrand(string brandId)`**
@@ -141,6 +162,8 @@ Adds a Brand (or Brands) that you wish to send to PureClarity in a feed to an in
 **`IEnumerable<RemoveItemResult<Brand>> RemoveBrands(IEnumerable<string> brandIds)`**
 
 Removes a Brand (or Brands) by Id from the internal collection. If Id is not in the internal collection then this does nothing.
+
+Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
 ### Add User(s)
@@ -151,6 +174,9 @@ Removes a Brand (or Brands) by Id from the internal collection. If Id is not in 
 
 Adds a User (or Users) that you wish to send to PureClarity in a feed to an internal collection. If a User with the same Id has already been added then the AddItemResult will return with Success: false and an error.
 
+Returns an [AddItemResult](/nuget-pureclarity/models/add-item-result) or IEnumerable\<[AddItemResult](/nuget-pureclarity/models/add-item-result)>.
+
+
 ### Remove User(s)
 
 **`RemoveItemResult<User> RemoveUser(string userId)`**
@@ -158,6 +184,8 @@ Adds a User (or Users) that you wish to send to PureClarity in a feed to an inte
 **`IEnumerable<RemoveItemResult<User>> RemoveUsers(IEnumerable<string> userIds)`**
 
 Removes a User (or Users) by Id from the internal collection.  If Id is not in the internal collection then this does nothing.
+
+Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
 ## Validating

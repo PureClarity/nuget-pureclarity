@@ -7,7 +7,7 @@ Provides a readonly view of the internal collection.
 Property | Type | Description
 ------------ | ------------- | ------------- 
 ItemCount | int | The number of items in the collection
-Items | IReadOnlyCollection<T> | A readonly view of the items in the collection
+Items | IReadOnlyCollection\<T> | A readonly view of the items in the collection
 
 ## Remarks
 
