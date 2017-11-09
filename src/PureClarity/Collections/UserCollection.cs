@@ -10,7 +10,7 @@ namespace PureClarity.Collections
 {
     internal class UserCollection : PCCollection<User>
     {
-        public override ValidationResult Validate()
+        public override CollectionValidationResult Validate()
         {
             var invalidItems = new Dictionary<string, IEnumerable<string>>();
 
@@ -22,7 +22,7 @@ namespace PureClarity.Collections
                 }
             }
 
-            return new ValidationResult { Success = invalidItems.Count == 0, InvalidRecords = invalidItems };
+            return new CollectionValidationResult { Success = invalidItems.Count == 0, InvalidRecords = invalidItems };
         }
 
 

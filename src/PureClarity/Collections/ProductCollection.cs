@@ -95,7 +95,7 @@ namespace PureClarity.Collections
             return result;
         }
 
-        public override ValidationResult Validate()
+        public override CollectionValidationResult Validate()
         {
             var products = this._items.AsEnumerable().Select((productKVP) =>
             {
