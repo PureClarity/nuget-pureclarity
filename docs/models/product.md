@@ -26,8 +26,8 @@ SearchTags | List\<string> | Optional array of text to use when searching for it
 AccountInclusions | List\<string> | Set of accounts where this product should be visible. The product will only be visible for these accounts - if no account information is present then these will be hidden from the user. This attribute is only valid on a record where no ParentId is set and where account information is being sent from the site. It is mutually exclusive to AccountExclusions and a record with both is invalid. | No
 AccountExclusions | List\<string> | Set of accounts where this product should be hidden. The product will only be hidden for these accounts - if no account information is present or the account is not excluded then these will be visible to the user. This attribute is only valid on a record where no ParentId is set and where account information is being sent from the site. It is mutually exclusive to AccountInclusions and a record with both is invalid. | No
 ExcludeFromRecommenders | bool | If present, and set to true then this product will be hidden from all recommenders. | No
-Prices | List\<Price> | A list of prices for the item. This should only be set on Variants and Simple Products. | Y (for variants and simple products)
-SalePrices | List\<Price> | A list of sale prices for the item. This should only be set on Variants and Simple Products. | N
+Prices | List\<Price> | A list of [Prices](price) for the item. This should only be set on Variants and Simple Products. | Y (for variants and simple products)
+SalePrices | List\<Price> | A list of sale [Prices](price) for the item. This should only be set on Variants and Simple Products. | N
 NoDefaultPriceForAccounts | bool | Whether to use the products "default" price when no account price is found for an account. Default is "false", meaning that if the site passes through an account id that doesn't have a price defined for this product, then the price defined in the product and variants will be used. If it is true and the site passes through an account id that doesn't have a price defined for this product, then the product will be hidden from the user. | No
 OnOffer | bool | Used by some of the Behavioral Merchandising recommenders to identify sale items. | No
 NewArrival | bool | Used by some of the Behavioral Merchandising recommenders to identify new items. | No
@@ -54,7 +54,7 @@ Variant records cannot have the same SKU as parent records. If your product data
 
 The ParentId record is used to group related variants together under a single parent record. Ensure this is set. For parent records – this must NOT be set. It is invalid to set this to an empty string for parent records.
 
-**Prices are mandatory for variants and simple products that have no variants.**
+**[Prices](price) are mandatory for variants and simple products that have no variants.**
 
 Do not set the Price or SalePrices fields for parent records.
 
