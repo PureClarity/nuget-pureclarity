@@ -185,6 +185,8 @@ Publishes validated feeds to the PureClarity SFTP server and returns the publish
 
 If validation has not yet been called an error will be returned.
 
+Returns [PublishResult](/nuget-pureclarity/models/publish-result) on completion.
+
 ### Publish Deltas
 
 **`PublishDeltaResult PublishDeltas()`**

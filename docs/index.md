@@ -20,4 +20,5 @@ Information on querying tokens.
 
 ### Responses
 
+* [PublishResult](models/publish-result)
 * [PublishDeltaResult](models/publish-delta-result)
