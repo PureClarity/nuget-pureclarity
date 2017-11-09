@@ -1,5 +1,7 @@
 ## Tokens
 
+Information on querying tokens.
+
 ### Query Token Manager
 
 **`new QueryTokenManager(string accessKey, int region)`**
