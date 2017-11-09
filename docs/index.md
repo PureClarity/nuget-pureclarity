@@ -17,6 +17,7 @@ Information on querying tokens.
 ### Collection Objects
 
 * [Product](models/product)
+* [AccountPrice](models/account-price)
 * [CollectionState](models/collection-state)
 
 ### Returned Objects
