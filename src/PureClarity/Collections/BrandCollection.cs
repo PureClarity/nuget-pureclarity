@@ -11,7 +11,7 @@ namespace PureClarity.Collections
     {
         public override CollectionValidationResult Validate()
         {
-            throw new NotImplementedException();
+            return new CollectionValidationResult { Success = true };
         }
     }
 }

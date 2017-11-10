@@ -53,6 +53,11 @@ namespace PureClarity.Managers
             return new ProcessedCategoryFeed { Categories = preProcessCategories.ToArray() };
         }
 
+        public static ProcessedBrandFeed ProcessBrands(IEnumerable<Brand> preProcessBrands)
+        {
+            return new ProcessedBrandFeed { Brands = preProcessBrands.ToArray() };
+        }
+
         public static ProcessedUserFeed ProcessUsers(IEnumerable<User> preProcessUsers)
         {
             var processedUsers = preProcessUsers.Select((user) =>
