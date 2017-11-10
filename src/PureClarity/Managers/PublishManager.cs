@@ -112,6 +112,22 @@ namespace PureClarity.Managers
             }
         }
 
+        public async Task<PublishFeedResult> PublishBrandFeed(IEnumerable<Brand> brands)
+        {
+            try
+            {
+                var brandFeed = ConversionManager.ProcessBrands(brands);
+                var feedJSON = JSONSerialization.SerializeToJSON(brandFeed);
+                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
+                return new PublishFeedResult { Success = true, Token = "" };
+            }
+            catch (Exception e)
+            {
+                return new PublishFeedResult { Success = false, Error = e.Message };
+            }
+        }
+
         public async Task<PublishFeedResult> PublishUserFeed(IEnumerable<User> users)
         {
             try

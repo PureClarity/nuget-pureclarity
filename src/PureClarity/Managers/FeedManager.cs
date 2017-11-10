@@ -228,13 +228,13 @@ namespace PureClarity.Managers
             validationResult.ProductValidationResult = _productCollection.Validate();
             validationResult.AccountPriceValidationResult = _accountPriceCollection.Validate();
             validationResult.CategoryValidationResult = _categoryCollection.Validate();
-            //validationResult.BrandValidationResult = _brandCollection.Validate();
+            validationResult.BrandValidationResult = _brandCollection.Validate();
             validationResult.UserValidationResult = _userCollection.Validate();
 
             validationResult.Success = validationResult.ProductValidationResult.Success
             && validationResult.AccountPriceValidationResult.Success
             && validationResult.CategoryValidationResult.Success            
-            //&& validationResult.BrandValidationResult.Success;
+            && validationResult.BrandValidationResult.Success
             && validationResult.UserValidationResult.Success;
 
             _feedsValid = validationResult.Success;
@@ -265,6 +265,11 @@ namespace PureClarity.Managers
             if (_categoryCollection.GetCollectionState().ItemCount != 0)
             {
                 publishResult.PublishCategoryFeedResult = publishManager.PublishCategoryFeed(_categoryCollection.GetItems()).Result;
+            }
+
+            if (_brandCollection.GetCollectionState().ItemCount != 0)
+            {
+                publishResult.PublishBrandFeedResult = publishManager.PublishBrandFeed(_brandCollection.GetItems()).Result;
             }
 
             if (_userCollection.GetCollectionState().ItemCount != 0)
