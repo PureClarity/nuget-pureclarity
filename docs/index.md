@@ -18,7 +18,7 @@ Information on querying tokens.
 
 * [Product](models/product)
 * [AccountPrice](models/account-price)
-* [AccountPrice](models/deleted-account-price)
+* [DeletedAccountPrice](models/deleted-account-price)
 * [Category](models/category)
 * [User](models/user)
 * [Brand](models/brand)
