@@ -14,16 +14,20 @@ Information on querying tokens.
 ## Models
 
 
-### Collection Objects
+### Input
 
 * [Product](models/product)
 * [AccountPrice](models/account-price)
-* [CollectionState](models/collection-state)
+* [AccountPrice](models/deleted-account-price)
+* [Category](models/category)
+* [User](models/user)
+* [Brand](models/brand)
 
-### Returned Objects
+### Output
 
 * [AddItemResult](models/add-item-result)
 * [RemoveItemResult](models/remove-item-result)
+* [CollectionState](models/collection-state)
 * [ValidationResult](models/validation-result)
 * [PublishResult](models/publish-result)
 * [PublishDeltaResult](models/publish-delta-result)
