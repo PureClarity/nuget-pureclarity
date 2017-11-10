@@ -16,7 +16,7 @@ The Region is used to select the appropriate endpoints to use.
 ## Adding and Removing Items
 
 
-### Add Product(s)
+### Add [Product(s)](/nuget-pureclarity/models/product)
  
 **`AddItemResult AddProduct(Product product)`**
 
@@ -70,7 +70,7 @@ Removes a deleted product (or deleted products) by Sku from the internal collect
 Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
-### Add Account Price(s)
+### Add [Account Price(s)](/nuget-pureclarity/models/account-price)
  
 **`AddItemResult AddAccountPrice(AccountPrice accountPrice)`**
 
@@ -95,7 +95,7 @@ Account price id is a string in the format of "\<accountId>|\<sku>"
 Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
-### Add Deleted Account Price(s)
+### Add [Deleted Account Price(s)](/nuget-pureclarity/models/deleted-account-price)
  
 **`AddItemResult AddDeletedAccountPrice(DeletedAccountPrice deletedAccountPrice)`**
 
@@ -122,7 +122,7 @@ Account price id is a string in the format of "\<accountId>|\<sku>".
 Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
-### Add Category(ies)
+### Add [Category(ies)](/nuget-pureclarity/models/category)
  
 **`AddItemResult AddCategory(Category category)`**
 
@@ -144,7 +144,7 @@ Removes a Category (or Categories) by Id from the internal collection. If Id is 
 Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
-### Add Brand(s)
+### Add [Brand(s)](/nuget-pureclarity/models/brand)
 
 **`AddItemResult AddBrand(Brand brand)`**
 
@@ -166,7 +166,7 @@ Removes a Brand (or Brands) by Id from the internal collection. If Id is not in 
 Returns a [RemoveItemResult](/nuget-pureclarity/models/remove-item-result) or IEnumerable\<[RemoveItemResult](/nuget-pureclarity/models/remove-item-result)>.
 
 
-### Add User(s)
+### Add [User(s)](/nuget-pureclarity/models/user)
 
 **`AddItemResult AddUser(User user)`**
 
