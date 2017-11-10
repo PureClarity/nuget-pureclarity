@@ -2,17 +2,25 @@
 
 ## Managers
 
+Classes containing the methods you will use to interact with the SDK.
+
 ### [Feeds](managers/feed-manager)
 
-Information on creating, validating and publishing feeds.
+Creating, validating and publishing feeds.
 
 
 ### [Tokens](managers/query-token-manager)
 
-Information on querying tokens.
+Querying tokens.
 
 ## Models
 
+The objects you will be dealing with when using the PureClarity SDK. 
+
+These are grouped into two sections:
+
+* **Input:** Objects you populate and then pass in to the SDK
+* **Output:** Objects that are returned by the SDK to indicate action success and state
 
 ### Input
 
