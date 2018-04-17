@@ -6,7 +6,7 @@ namespace PureClarity.Helpers
     {
 
         private static RegionEndpoint[] regionEndpoints = {
-            new RegionEndpoint("http://api.pureclarity.dev:1337", "localhost"),
+            new RegionEndpoint("http://api.pureclarity.test:1337", "localhost"),
             new RegionEndpoint("https://api-eu-w-1.pureclarity.net", "sftp-eu-w-1.pureclarity.net"),
             new RegionEndpoint("https://api-eu-w-2.pureclarity.net", "sftp-eu-w-2.pureclarity.net"),
             new RegionEndpoint("https://api-eu-c-1.pureclarity.net", "sftp-eu-c-1.pureclarity.net"),
