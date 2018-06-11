@@ -56,6 +56,8 @@ Adds a deleted product (or deleted products) sku that you wish to send to PureCl
 
 This is used to send the sku of a product which you no longer want PureClarity to show. It is only required for a delta. A full feed does not require this.
 
+Please note that if you wish to remove a variant from a product, you will need to use the AddProduct method instead. This should be used to send the new state of the products and its variants. The DeletedProductSku method is only for a product (i.e. the parent entity).
+
 Returns an [AddItemResult](/nuget-pureclarity/models/add-item-result) or IEnumerable\<[AddItemResult](/nuget-pureclarity/models/add-item-result)>.
 
 
