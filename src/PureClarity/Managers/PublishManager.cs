@@ -14,7 +14,7 @@ using Renci.SshNet.Common;
 
 namespace PureClarity.Managers
 {
-    internal class PublishManager
+    internal class PublishManager : IPublishManager
     {
         private readonly string accessKey;
         private readonly string secretKey;

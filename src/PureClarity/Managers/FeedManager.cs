@@ -13,6 +13,7 @@ namespace PureClarity.Managers
         private string _accessKey;
         private string _secretKey;
         private IReadOnlyList<string> _sftpHostKeyFingerprints;
+        private readonly IPublishManager _publishManager;
 
         private ProductCollection _productCollection;
         private DeletedProductCollection _deletedProductCollection;
@@ -68,10 +69,16 @@ namespace PureClarity.Managers
         /// <param name="secretKey">The secret key is used for authentication when publishing a feed</param>
         /// <param name="sftpHostKeyFingerprints">Expected SHA256 host key fingerprints for the SFTP endpoint, overriding the built-in values. Supply more than one to span a host key rotation.</param>
         public FeedManager(string accessKey, string secretKey, IReadOnlyList<string> sftpHostKeyFingerprints)
+            : this(accessKey, secretKey, sftpHostKeyFingerprints, null)
+        {
+        }
+
+        internal FeedManager(string accessKey, string secretKey, IReadOnlyList<string> sftpHostKeyFingerprints, IPublishManager publishManager)
         {
             _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
             _secretKey = secretKey ?? throw new System.ArgumentNullException(nameof(secretKey));
             _sftpHostKeyFingerprints = sftpHostKeyFingerprints;
+            _publishManager = publishManager ?? new PublishManager(_accessKey, _secretKey, _sftpHostKeyFingerprints);
 
             _productCollection = new ProductCollection();
             _categoryCollection = new CategoryCollection();
@@ -289,28 +296,27 @@ namespace PureClarity.Managers
                 return new PublishResult { Success = false, Error = "Feeds not yet successfully validated" };
             }
 
-            var publishManager = new PublishManager(_accessKey, _secretKey, _sftpHostKeyFingerprints);
             var publishResult = new PublishResult();
 
             if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishProductFeedResult = publishManager.PublishProductFeed(_productCollection.GetItems(), _accountPriceCollection.GetItems()).Result;
+                publishResult.PublishProductFeedResult = _publishManager.PublishProductFeed(_productCollection.GetItems(), _accountPriceCollection.GetItems()).Result;
                 _productsPushed = publishResult.PublishProductFeedResult.Success;
             }
 
             if (_categoryCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishCategoryFeedResult = publishManager.PublishCategoryFeed(_categoryCollection.GetItems()).Result;
+                publishResult.PublishCategoryFeedResult = _publishManager.PublishCategoryFeed(_categoryCollection.GetItems()).Result;
             }
 
             if (_brandCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishBrandFeedResult = publishManager.PublishBrandFeed(_brandCollection.GetItems()).Result;
+                publishResult.PublishBrandFeedResult = _publishManager.PublishBrandFeed(_brandCollection.GetItems()).Result;
             }
 
             if (_userCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishUserFeedResult = publishManager.PublishUserFeed(_userCollection.GetItems()).Result;
+                publishResult.PublishUserFeedResult = _publishManager.PublishUserFeed(_userCollection.GetItems()).Result;
             }
 
             publishResult.Success = (publishResult.PublishProductFeedResult?.Success ?? true)
@@ -328,28 +334,27 @@ namespace PureClarity.Managers
                 return new PublishResult { Success = false, Error = "Feeds not yet successfully validated" };
             }
 
-            var publishManager = new PublishManager(_accessKey, _secretKey, _sftpHostKeyFingerprints);
             var publishResult = new PublishResult();
 
             if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishProductFeedResult = await publishManager.PublishProductFeed(_productCollection.GetItems(), _accountPriceCollection.GetItems());
+                publishResult.PublishProductFeedResult = await _publishManager.PublishProductFeed(_productCollection.GetItems(), _accountPriceCollection.GetItems());
                 _productsPushed = publishResult.PublishProductFeedResult.Success;
             }
 
             if (_categoryCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishCategoryFeedResult = await publishManager.PublishCategoryFeed(_categoryCollection.GetItems());
+                publishResult.PublishCategoryFeedResult = await _publishManager.PublishCategoryFeed(_categoryCollection.GetItems());
             }
 
             if (_brandCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishBrandFeedResult = await publishManager.PublishBrandFeed(_brandCollection.GetItems());
+                publishResult.PublishBrandFeedResult = await _publishManager.PublishBrandFeed(_brandCollection.GetItems());
             }
 
             if (_userCollection.GetCollectionState().ItemCount != 0)
             {
-                publishResult.PublishUserFeedResult = await publishManager.PublishUserFeed(_userCollection.GetItems());
+                publishResult.PublishUserFeedResult = await _publishManager.PublishUserFeed(_userCollection.GetItems());
             }
 
             publishResult.Success = (publishResult.PublishProductFeedResult?.Success ?? true)
@@ -367,12 +372,11 @@ namespace PureClarity.Managers
                 return new PublishDeltaResult { Success = false, Error = "Feeds not yet successfully validated" };
             }
 
-            var publishManager = new PublishManager(_accessKey, _secretKey, _sftpHostKeyFingerprints);
             var publishResult = new PublishDeltaResult();
 
             if (!_productsPushed)
             {
-                var publishProductDeltas = publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accountPriceCollection.GetItems(), _deletedAccountPriceCollection.GetItems(), _accessKey).Result;
+                var publishProductDeltas = _publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accountPriceCollection.GetItems(), _deletedAccountPriceCollection.GetItems(), _accessKey).Result;
                 publishResult = publishProductDeltas;
                 _productsPushed = publishProductDeltas.Success;
             }
@@ -387,12 +391,11 @@ namespace PureClarity.Managers
                 return new PublishDeltaResult { Success = false, Error = "Feeds not yet successfully validated" };
             }
 
-            var publishManager = new PublishManager(_accessKey, _secretKey, _sftpHostKeyFingerprints);
             var publishResult = new PublishDeltaResult();
 
             if (!_productsPushed)
             {
-                publishResult = await publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accountPriceCollection.GetItems(), _deletedAccountPriceCollection.GetItems(), _accessKey);
+                publishResult = await _publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accountPriceCollection.GetItems(), _deletedAccountPriceCollection.GetItems(), _accessKey);
                 _productsPushed = publishResult.Success;
             }
 
