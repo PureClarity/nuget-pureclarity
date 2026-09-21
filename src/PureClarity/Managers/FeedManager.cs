@@ -295,7 +295,7 @@ namespace PureClarity.Managers
             if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
             {
                 publishResult.PublishProductFeedResult = publishManager.PublishProductFeed(_productCollection.GetItems(), _accountPriceCollection.GetItems()).Result;
-                _productsPushed = true;
+                _productsPushed = publishResult.PublishProductFeedResult.Success;
             }
 
             if (_categoryCollection.GetCollectionState().ItemCount != 0)
@@ -334,7 +334,7 @@ namespace PureClarity.Managers
             if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
             {
                 publishResult.PublishProductFeedResult = await publishManager.PublishProductFeed(_productCollection.GetItems(), _accountPriceCollection.GetItems());
-                _productsPushed = true;
+                _productsPushed = publishResult.PublishProductFeedResult.Success;
             }
 
             if (_categoryCollection.GetCollectionState().ItemCount != 0)
@@ -374,7 +374,7 @@ namespace PureClarity.Managers
             {
                 var publishProductDeltas = publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accountPriceCollection.GetItems(), _deletedAccountPriceCollection.GetItems(), _accessKey).Result;
                 publishResult = publishProductDeltas;
-                _productsPushed = true;
+                _productsPushed = publishProductDeltas.Success;
             }
 
             return publishResult;
@@ -393,7 +393,7 @@ namespace PureClarity.Managers
             if (!_productsPushed)
             {
                 publishResult = await publishManager.PublishProductDeltas(_productCollection.GetItems(), _deletedProductCollection.GetItems(), _accountPriceCollection.GetItems(), _deletedAccountPriceCollection.GetItems(), _accessKey);
-                _productsPushed = true;
+                _productsPushed = publishResult.Success;
             }
 
             return publishResult;
