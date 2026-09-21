@@ -1,4 +1,3 @@
-using System;
 using PureClarity.Helpers;
 using Xunit;
 
@@ -6,51 +5,40 @@ namespace PureClarity_Test
 {
     public class RegionEndpointsTest
     {
-        [Fact]
-        public void ReturnsEndpointsForKnownRegion()
+        private const string EuFingerprint = "SHA256:Uo5tnulN0tWtlcSH5dgeCNOuPl4yZ2XmTkILosOO/wY";
+
+        /// <summary>
+        /// Every region is served by the EU infrastructure, including regions that never resolved
+        /// and the retired plaintext development region 0.
+        /// </summary>
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(4)]
+        [InlineData(14)]
+        [InlineData(-1)]
+        [InlineData(int.MaxValue)]
+        public void ResolvesEveryRegionToEu(int region)
         {
-            var endpoint = RegionEndpoints.GetRegionEndpoints(1);
+            var endpoint = RegionEndpoints.GetRegionEndpoints(region);
 
             Assert.Equal("https://api-eu-w-1.pureclarity.net", endpoint.APIEndpoint);
             Assert.Equal("sftp-eu-w-1.pureclarity.net", endpoint.SFTPEndpoint);
         }
 
-        /// <summary>
-        /// Publishing refuses to connect without a pinned host key, so losing this would take the region offline.
-        /// </summary>
         [Fact]
-        public void PinsHostKeyForEuWest1()
+        public void NeverUsesPlaintextHttp()
         {
-            var endpoint = RegionEndpoints.GetRegionEndpoints(1);
-
-            Assert.Contains("SHA256:Uo5tnulN0tWtlcSH5dgeCNOuPl4yZ2XmTkILosOO/wY", endpoint.SFTPHostKeyFingerprints);
+            Assert.StartsWith("https://", RegionEndpoints.GetRegionEndpoints(0).APIEndpoint);
         }
 
         /// <summary>
-        /// Region 0 was a plaintext HTTP development endpoint and must no longer resolve.
+        /// Publishing refuses to connect without a pinned host key, so losing this would take publishing offline.
         /// </summary>
         [Fact]
-        public void RejectsRetiredDevelopmentRegion()
+        public void PinsEuHostKey()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => RegionEndpoints.GetRegionEndpoints(0));
-        }
-
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(15)]
-        [InlineData(int.MaxValue)]
-        public void RejectsOutOfRangeRegion(int region)
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => RegionEndpoints.GetRegionEndpoints(region));
-        }
-
-        [Fact]
-        public void AllKnownRegionsUseHttps()
-        {
-            for (var region = 1; region <= 14; region++)
-            {
-                Assert.StartsWith("https://", RegionEndpoints.GetRegionEndpoints(region).APIEndpoint);
-            }
+            Assert.Contains(EuFingerprint, RegionEndpoints.GetRegionEndpoints(1).SFTPHostKeyFingerprints);
         }
     }
 }

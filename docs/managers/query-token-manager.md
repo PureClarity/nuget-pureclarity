@@ -9,7 +9,7 @@ Information on querying tokens.
 Sets the Access Key and Region to use when making calls to PureClarity. These details will be provided to you at signup. 
 
 The Access Key identifies the client.
-The Region is used to select the appropriate endpoints to use.
+The Region is retained for backwards compatibility and is ignored. All PureClarity traffic is served by the EU infrastructure, so any value resolves to the same endpoints.
 
 ## Querying Tokens
 
