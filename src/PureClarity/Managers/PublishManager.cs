@@ -18,16 +18,14 @@ namespace PureClarity.Managers
     {
         private readonly string accessKey;
         private readonly string secretKey;
-        private readonly int region;
         private readonly IReadOnlyList<string> hostKeyFingerprints;
         private readonly string dateFormat = "yyyyMdHHmmss";
         private readonly string deltaEndpointSuffix = "/api/productdelta";
 
-        public PublishManager(string accessKey, string secretKey, int region, IReadOnlyList<string> hostKeyFingerprints = null)
+        public PublishManager(string accessKey, string secretKey, IReadOnlyList<string> hostKeyFingerprints = null)
         {
             this.accessKey = accessKey;
             this.secretKey = secretKey;
-            this.region = region;
             this.hostKeyFingerprints = hostKeyFingerprints ?? new string[0];
         }
 
@@ -37,7 +35,7 @@ namespace PureClarity.Managers
             {
                 var productFeed = ConversionManager.ProcessProductFeed(products, accountPrices);
                 var feedJSON = JSONSerialization.SerializeToJSON(productFeed);
-                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                var endpoint = RegionEndpoints.GetEndpoints();
                 await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
@@ -51,7 +49,7 @@ namespace PureClarity.Managers
         {
             var deltas = new List<ProcessedProductDelta>();
             var publishDeltaResult = new PublishDeltaResult();
-            var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+            var endpoint = RegionEndpoints.GetEndpoints();
             var fullEndpoint = $"{endpoint.APIEndpoint}{deltaEndpointSuffix}";
 
             try
@@ -105,7 +103,7 @@ namespace PureClarity.Managers
             {
                 var categoryFeed = ConversionManager.ProcessCategories(categories);
                 var feedJSON = JSONSerialization.SerializeToJSON(categoryFeed);
-                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                var endpoint = RegionEndpoints.GetEndpoints();
                 await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
@@ -121,7 +119,7 @@ namespace PureClarity.Managers
             {
                 var brandFeed = ConversionManager.ProcessBrands(brands);
                 var feedJSON = JSONSerialization.SerializeToJSON(brandFeed);
-                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                var endpoint = RegionEndpoints.GetEndpoints();
                 await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
@@ -137,7 +135,7 @@ namespace PureClarity.Managers
             {
                 var userFeed = ConversionManager.ProcessUsers(users);
                 var feedJSON = JSONSerialization.SerializeToJSON(userFeed);
-                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                var endpoint = RegionEndpoints.GetEndpoints();
                 await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
@@ -173,7 +171,7 @@ namespace PureClarity.Managers
         {
             var fingerprints = hostKeyFingerprints.Count > 0
                 ? hostKeyFingerprints
-                : RegionEndpoints.GetRegionEndpoints(region).SFTPHostKeyFingerprints;
+                : RegionEndpoints.GetEndpoints().SFTPHostKeyFingerprints;
 
             if (fingerprints == null || fingerprints.Count == 0)
             {

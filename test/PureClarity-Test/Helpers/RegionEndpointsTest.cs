@@ -7,20 +7,10 @@ namespace PureClarity_Test
     {
         private const string EuFingerprint = "SHA256:Uo5tnulN0tWtlcSH5dgeCNOuPl4yZ2XmTkILosOO/wY";
 
-        /// <summary>
-        /// Every region is served by the EU infrastructure, including regions that never resolved
-        /// and the retired plaintext development region 0.
-        /// </summary>
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(4)]
-        [InlineData(14)]
-        [InlineData(-1)]
-        [InlineData(int.MaxValue)]
-        public void ResolvesEveryRegionToEu(int region)
+        [Fact]
+        public void ResolvesToEu()
         {
-            var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+            var endpoint = RegionEndpoints.GetEndpoints();
 
             Assert.Equal("https://api-eu-w-1.pureclarity.net", endpoint.APIEndpoint);
             Assert.Equal("sftp-eu-w-1.pureclarity.net", endpoint.SFTPEndpoint);
@@ -29,7 +19,7 @@ namespace PureClarity_Test
         [Fact]
         public void NeverUsesPlaintextHttp()
         {
-            Assert.StartsWith("https://", RegionEndpoints.GetRegionEndpoints(0).APIEndpoint);
+            Assert.StartsWith("https://", RegionEndpoints.GetEndpoints().APIEndpoint);
         }
 
         /// <summary>
@@ -38,7 +28,7 @@ namespace PureClarity_Test
         [Fact]
         public void PinsEuHostKey()
         {
-            Assert.Contains(EuFingerprint, RegionEndpoints.GetRegionEndpoints(1).SFTPHostKeyFingerprints);
+            Assert.Contains(EuFingerprint, RegionEndpoints.GetEndpoints().SFTPHostKeyFingerprints);
         }
     }
 }

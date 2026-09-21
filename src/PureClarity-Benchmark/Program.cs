@@ -173,7 +173,7 @@ namespace PureClarity_Benchmark
         [Benchmark]
         public static void RunProductFeed()
         {
-            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST");
             feedManager.AddProducts(_products);
             feedManager.AddAccountPrices(_accountPrices);
             feedManager.Validate();
@@ -184,7 +184,7 @@ namespace PureClarity_Benchmark
         [Benchmark]
         public static void RunProductFeedVariantIssueCheck()
         {
-            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST");
             var prod = new Product("59095",
             "Bear June Medium", 
             "<p>.</p>", 
@@ -212,7 +212,7 @@ namespace PureClarity_Benchmark
         [Benchmark]
         public static void RunProductDeltas()
         {
-            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST");
             feedManager.AddProducts(_products);
             feedManager.AddDeletedProductSkus(_deletedProducts);
             feedManager.AddAccountPrices(_accountPrices);
@@ -225,7 +225,7 @@ namespace PureClarity_Benchmark
         [Benchmark]
         public static void RunParallelAddProductFeed()
         {
-            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST");
 
             System.Threading.Tasks.Parallel.ForEach(_products, (prod) =>
             {
@@ -250,7 +250,7 @@ namespace PureClarity_Benchmark
         [Benchmark]
         public static void RunCategoryFeed()
         {
-            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST");
             feedManager.AddCategories(_categories);
             feedManager.Validate();
             var publishResult = feedManager.PublishAsync().Result;
@@ -260,7 +260,7 @@ namespace PureClarity_Benchmark
         [Benchmark]
         public static void RunUserFeed()
         {
-            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST", 0);
+            var feedManager = new FeedManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", "TEST");
             feedManager.AddUsers(_users);
             var valid = feedManager.Validate();
             var publishResult = feedManager.PublishAsync().Result;
@@ -277,7 +277,7 @@ namespace PureClarity_Benchmark
     {
         public static void RunQueryTokens()
         {
-            var tokenManager = new QueryTokenManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b", 0);
+            var tokenManager = new QueryTokenManager("7ad2d0bb-6c44-4a93-a146-6c8ed845860b");
             var tokenResults = tokenManager.QueryTokensAsync(new List<string>{
                 "Mhtf-R0LTASEHxHOfK0H8g",
                 "8BwrRzGYSpSduVnhqZ8weQ",
