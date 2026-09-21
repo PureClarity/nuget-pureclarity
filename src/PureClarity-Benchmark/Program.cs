@@ -6,10 +6,8 @@ using BenchmarkDotNet.Running;
 using PureClarity.Managers;
 using PureClarity.Models;
 using System.Linq;
-using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Engines;
 using System.Collections.Concurrent;
-using Renci.SshNet;
 using System.Threading.Tasks;
 
 namespace PureClarity_Benchmark

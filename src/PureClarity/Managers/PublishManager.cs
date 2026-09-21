@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using PureClarity.Collections;
 using PureClarity.Helpers;
 using PureClarity.Models;
 using PureClarity.Models.Response;
 using Renci.SshNet;
-using Renci.SshNet.Async;
 
 namespace PureClarity.Managers
 {
@@ -151,31 +151,13 @@ namespace PureClarity.Managers
                                                    new[] { new PasswordAuthenticationMethod(this.accessKey, this.secretKey) });
             using (var client = new SftpClient(connectionInfo))
             {
-                client.Connect();
+                await client.ConnectAsync(CancellationToken.None);
 
                 using (MemoryStream jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
                 {
-                    await client.UploadAsync(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json");
+                    await client.UploadFileAsync(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json", CancellationToken.None);
                 }
 
-                client.Disconnect();
-            }
-        }
-
-        private void UploadToSTFP(string json, string endpoint)
-        {
-            var connectionInfo = new ConnectionInfo(endpoint, 2222,
-                                                   this.accessKey,
-                                                   new[] { new PasswordAuthenticationMethod(this.accessKey, this.secretKey) });
-            using (var client = new SftpClient(connectionInfo))
-            {
-                client.Connect();
-
-                using (MemoryStream jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
-                {
-                    client.UploadFile(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json");
-                }
-                
                 client.Disconnect();
             }
         }

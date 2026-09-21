@@ -1,18 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="SSH.NET" Version="2016.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="SSH.NET" Version="2026.0.0" />
   </ItemGroup>
   <PropertyGroup>
-        <Description>An SDK for sending PureClarity feeds/deltas and querying delta status.</Description>
-        <Authors>PureClarity</Authors>
-        <Title>PureClarity</Title>
-        <PackageIconUrl>https://s3-eu-west-1.amazonaws.com/pureclarity-media/pureclarity.png</PackageIconUrl>
-        <PackageProjectUrl>https://github.com/PureClarity/nuget-pureclarity</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/PureClarity/nuget-pureclarity</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-</PropertyGroup>
+    <Description>An SDK for sending PureClarity feeds/deltas and querying delta status.</Description>
+    <Authors>PureClarity</Authors>
+    <Title>PureClarity</Title>
+    <Version>0.37.0-alpha</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/PureClarity/nuget-pureclarity</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/PureClarity/nuget-pureclarity</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="PureClarity-Test" />
+  </ItemGroup>
 </Project>
