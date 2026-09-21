@@ -3,29 +3,30 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using PureClarity.Collections;
 using PureClarity.Helpers;
 using PureClarity.Models;
 using PureClarity.Models.Response;
 using Renci.SshNet;
-using Renci.SshNet.Async;
+using Renci.SshNet.Common;
 
 namespace PureClarity.Managers
 {
-    internal class PublishManager
+    internal class PublishManager : IPublishManager
     {
         private readonly string accessKey;
         private readonly string secretKey;
-        private readonly int region;
+        private readonly IReadOnlyList<string> hostKeyFingerprints;
         private readonly string dateFormat = "yyyyMdHHmmss";
         private readonly string deltaEndpointSuffix = "/api/productdelta";
 
-        public PublishManager(string accessKey, string secretKey, int region)
+        public PublishManager(string accessKey, string secretKey, IReadOnlyList<string> hostKeyFingerprints = null)
         {
             this.accessKey = accessKey;
             this.secretKey = secretKey;
-            this.region = region;
+            this.hostKeyFingerprints = hostKeyFingerprints ?? new string[0];
         }
 
         public async Task<PublishFeedResult> PublishProductFeed(IEnumerable<Product> products, IEnumerable<AccountPrice> accountPrices)
@@ -34,7 +35,7 @@ namespace PureClarity.Managers
             {
                 var productFeed = ConversionManager.ProcessProductFeed(products, accountPrices);
                 var feedJSON = JSONSerialization.SerializeToJSON(productFeed);
-                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                var endpoint = RegionEndpoints.GetEndpoints();
                 await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
@@ -48,7 +49,7 @@ namespace PureClarity.Managers
         {
             var deltas = new List<ProcessedProductDelta>();
             var publishDeltaResult = new PublishDeltaResult();
-            var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+            var endpoint = RegionEndpoints.GetEndpoints();
             var fullEndpoint = $"{endpoint.APIEndpoint}{deltaEndpointSuffix}";
 
             try
@@ -102,7 +103,7 @@ namespace PureClarity.Managers
             {
                 var categoryFeed = ConversionManager.ProcessCategories(categories);
                 var feedJSON = JSONSerialization.SerializeToJSON(categoryFeed);
-                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                var endpoint = RegionEndpoints.GetEndpoints();
                 await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
@@ -118,7 +119,7 @@ namespace PureClarity.Managers
             {
                 var brandFeed = ConversionManager.ProcessBrands(brands);
                 var feedJSON = JSONSerialization.SerializeToJSON(brandFeed);
-                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                var endpoint = RegionEndpoints.GetEndpoints();
                 await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
@@ -134,7 +135,7 @@ namespace PureClarity.Managers
             {
                 var userFeed = ConversionManager.ProcessUsers(users);
                 var feedJSON = JSONSerialization.SerializeToJSON(userFeed);
-                var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+                var endpoint = RegionEndpoints.GetEndpoints();
                 await UploadToSTFPAsync(feedJSON, endpoint.SFTPEndpoint);
                 return new PublishFeedResult { Success = true, Token = "" };
             }
@@ -146,38 +147,45 @@ namespace PureClarity.Managers
 
         private async Task UploadToSTFPAsync(string json, string endpoint)
         {
+            var fingerprints = GetExpectedHostKeyFingerprints(endpoint);
+
             var connectionInfo = new ConnectionInfo(endpoint, 2222,
                                                    this.accessKey,
                                                    new[] { new PasswordAuthenticationMethod(this.accessKey, this.secretKey) });
             using (var client = new SftpClient(connectionInfo))
             {
-                client.Connect();
+                client.HostKeyReceived += (sender, e) => e.CanTrust = IsTrustedHostKey(e, fingerprints);
+
+                await client.ConnectAsync(CancellationToken.None);
 
                 using (MemoryStream jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
                 {
-                    await client.UploadAsync(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json");
+                    await client.UploadFileAsync(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json", CancellationToken.None);
                 }
 
                 client.Disconnect();
             }
         }
 
-        private void UploadToSTFP(string json, string endpoint)
+        private IReadOnlyList<string> GetExpectedHostKeyFingerprints(string endpoint)
         {
-            var connectionInfo = new ConnectionInfo(endpoint, 2222,
-                                                   this.accessKey,
-                                                   new[] { new PasswordAuthenticationMethod(this.accessKey, this.secretKey) });
-            using (var client = new SftpClient(connectionInfo))
-            {
-                client.Connect();
+            var fingerprints = hostKeyFingerprints.Count > 0
+                ? hostKeyFingerprints
+                : RegionEndpoints.GetEndpoints().SFTPHostKeyFingerprints;
 
-                using (MemoryStream jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
-                {
-                    client.UploadFile(jsonStream, $"PureClarityFeed-{DateTime.UtcNow.ToString(dateFormat)}.json");
-                }
-                
-                client.Disconnect();
+            if (fingerprints == null || fingerprints.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"No SFTP host key fingerprints are configured for {endpoint}, so the server's identity cannot be verified. " +
+                    "Supply the expected SHA256 fingerprints via the FeedManager constructor.");
             }
+
+            return fingerprints;
+        }
+
+        private static bool IsTrustedHostKey(HostKeyEventArgs e, IReadOnlyList<string> expectedFingerprints)
+        {
+            return HostKeyFingerprint.Matches(e.FingerPrintSHA256, expectedFingerprints);
         }
     }
 }

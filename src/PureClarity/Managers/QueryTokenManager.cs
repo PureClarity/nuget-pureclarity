@@ -13,15 +13,22 @@ namespace PureClarity.Managers
     public class QueryTokenManager
     {
         private readonly string _accessKey;
-        private readonly int _region;
         private readonly string deltaStatusEndpointSuffix = "/api/productdeltastatus";
         private readonly string _fullEndpoint;
 
+        /// <param name="accessKey">The access key identifies the client</param>
+        /// <param name="region">Ignored. All PureClarity traffic is served by a single set of endpoints.</param>
+        [Obsolete("The region argument is ignored. Use QueryTokenManager(accessKey) instead.")]
         public QueryTokenManager(string accessKey, int region)
+            : this(accessKey)
+        {
+        }
+
+        /// <param name="accessKey">The access key identifies the client</param>
+        public QueryTokenManager(string accessKey)
         {
             _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
-            _region = region;
-            var endpoint = RegionEndpoints.GetRegionEndpoints(region);
+            var endpoint = RegionEndpoints.GetEndpoints();
             _fullEndpoint = $"{endpoint.APIEndpoint}{deltaStatusEndpointSuffix}";
         }
 

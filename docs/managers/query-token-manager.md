@@ -4,12 +4,13 @@ Information on querying tokens.
 
 ## Initialisation
 
-**`new QueryTokenManager(string accessKey, int region)`**
+**`new QueryTokenManager(string accessKey)`**
 
-Sets the Access Key and Region to use when making calls to PureClarity. These details will be provided to you at signup. 
+Sets the Access Key to use when making calls to PureClarity. This will be provided to you at signup. 
 
 The Access Key identifies the client.
-The Region is used to select the appropriate endpoints to use.
+
+The overload taking an `int region` is deprecated. All PureClarity traffic is served by a single set of endpoints, so the region value was ignored; it still works but produces a compiler warning.
 
 ## Querying Tokens
 
