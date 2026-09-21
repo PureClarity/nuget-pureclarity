@@ -15,9 +15,9 @@ The Secret Key is used for authentication when publishing a feed. It should be t
 
 The overloads taking an `int region` are deprecated. All PureClarity traffic is served by a single set of endpoints, so the region value was ignored; they still work but produce a compiler warning.
 
-Publishing a feed uploads it over SFTP, and the SFTP server's host key is verified before any credentials or data are sent. The expected SHA256 fingerprints ship with the SDK per region. `sftpHostKeyFingerprints` overrides those built-in values, which lets you keep publishing if PureClarity rotates a host key before you can upgrade the package. Supply more than one fingerprint to accept either side of a rotation. Fingerprints may be given with or without the `SHA256:` prefix.
+Publishing a feed uploads it over SFTP, and the SFTP server's host key is verified before any credentials or data are sent. The expected SHA256 fingerprint ships with the SDK. `sftpHostKeyFingerprints` overrides that built-in value, which lets you keep publishing if PureClarity rotates the host key before you can upgrade the package. Supply more than one fingerprint to accept either side of a rotation. Fingerprints may be given with or without the `SHA256:` prefix.
 
-Publishing throws if no fingerprint is available for the region, rather than trusting whatever key the server presents.
+If the host key cannot be verified, the upload is abandoned before any credentials are sent. The publish methods do not throw for this, or for any other publishing failure: they report it on the returned result. Check `Success` and `Error` on the result rather than relying on exception handling, otherwise failures will pass unnoticed.
 
 
 ## Adding and Removing Items

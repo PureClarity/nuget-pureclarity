@@ -315,6 +315,7 @@ namespace PureClarity.Managers
 
             publishResult.Success = (publishResult.PublishProductFeedResult?.Success ?? true)
                                     && (publishResult.PublishCategoryFeedResult?.Success ?? true)
+                                    && (publishResult.PublishBrandFeedResult?.Success ?? true)
                                     && (publishResult.PublishUserFeedResult?.Success ?? true);
 
             return publishResult;
@@ -341,6 +342,11 @@ namespace PureClarity.Managers
                 publishResult.PublishCategoryFeedResult = await publishManager.PublishCategoryFeed(_categoryCollection.GetItems());
             }
 
+            if (_brandCollection.GetCollectionState().ItemCount != 0)
+            {
+                publishResult.PublishBrandFeedResult = await publishManager.PublishBrandFeed(_brandCollection.GetItems());
+            }
+
             if (_userCollection.GetCollectionState().ItemCount != 0)
             {
                 publishResult.PublishUserFeedResult = await publishManager.PublishUserFeed(_userCollection.GetItems());
@@ -348,6 +354,7 @@ namespace PureClarity.Managers
 
             publishResult.Success = (publishResult.PublishProductFeedResult?.Success ?? true)
                                     && (publishResult.PublishCategoryFeedResult?.Success ?? true)
+                                    && (publishResult.PublishBrandFeedResult?.Success ?? true)
                                     && (publishResult.PublishUserFeedResult?.Success ?? true);
 
             return publishResult;
