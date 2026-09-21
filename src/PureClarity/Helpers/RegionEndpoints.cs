@@ -1,13 +1,15 @@
+using System;
 using PureClarity.Models;
 
 namespace PureClarity.Helpers
 {
-    internal class RegionEndpoints
+    internal static class RegionEndpoints
     {
-
-        private static RegionEndpoint[] regionEndpoints = {
-            new RegionEndpoint("http://api.pureclarity.dev:1337", "localhost"),
-            new RegionEndpoint("https://api-eu-w-1.pureclarity.net", "sftp-eu-w-1.pureclarity.net"),
+        // Index 0 previously held a plaintext HTTP development endpoint and is intentionally unavailable.
+        // Remaining indices must stay stable: callers pass the region as an int.
+        private static readonly RegionEndpoint[] regionEndpoints = {
+            null,
+            new RegionEndpoint("https://api-eu-w-1.pureclarity.net", "sftp-eu-w-1.pureclarity.net", "SHA256:Uo5tnulN0tWtlcSH5dgeCNOuPl4yZ2XmTkILosOO/wY"),
             new RegionEndpoint("https://api-eu-w-2.pureclarity.net", "sftp-eu-w-2.pureclarity.net"),
             new RegionEndpoint("https://api-eu-c-1.pureclarity.net", "sftp-eu-c-1.pureclarity.net"),
             new RegionEndpoint("https://api-us-e-1.pureclarity.net", "sftp-us-e-1.pureclarity.net"),
@@ -25,6 +27,11 @@ namespace PureClarity.Helpers
 
         public static RegionEndpoint GetRegionEndpoints(int region)
         {
+            if (region < 0 || region >= regionEndpoints.Length || regionEndpoints[region] == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(region), region, "Unknown PureClarity region.");
+            }
+
             return regionEndpoints[region];
         }
     }

@@ -10,6 +10,7 @@ using PureClarity.Helpers;
 using PureClarity.Models;
 using PureClarity.Models.Response;
 using Renci.SshNet;
+using Renci.SshNet.Common;
 
 namespace PureClarity.Managers
 {
@@ -18,14 +19,16 @@ namespace PureClarity.Managers
         private readonly string accessKey;
         private readonly string secretKey;
         private readonly int region;
+        private readonly IReadOnlyList<string> hostKeyFingerprints;
         private readonly string dateFormat = "yyyyMdHHmmss";
         private readonly string deltaEndpointSuffix = "/api/productdelta";
 
-        public PublishManager(string accessKey, string secretKey, int region)
+        public PublishManager(string accessKey, string secretKey, int region, IReadOnlyList<string> hostKeyFingerprints = null)
         {
             this.accessKey = accessKey;
             this.secretKey = secretKey;
             this.region = region;
+            this.hostKeyFingerprints = hostKeyFingerprints ?? new string[0];
         }
 
         public async Task<PublishFeedResult> PublishProductFeed(IEnumerable<Product> products, IEnumerable<AccountPrice> accountPrices)
@@ -146,11 +149,15 @@ namespace PureClarity.Managers
 
         private async Task UploadToSTFPAsync(string json, string endpoint)
         {
+            var fingerprints = GetExpectedHostKeyFingerprints(endpoint);
+
             var connectionInfo = new ConnectionInfo(endpoint, 2222,
                                                    this.accessKey,
                                                    new[] { new PasswordAuthenticationMethod(this.accessKey, this.secretKey) });
             using (var client = new SftpClient(connectionInfo))
             {
+                client.HostKeyReceived += (sender, e) => e.CanTrust = IsTrustedHostKey(e, fingerprints);
+
                 await client.ConnectAsync(CancellationToken.None);
 
                 using (MemoryStream jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
@@ -160,6 +167,27 @@ namespace PureClarity.Managers
 
                 client.Disconnect();
             }
+        }
+
+        private IReadOnlyList<string> GetExpectedHostKeyFingerprints(string endpoint)
+        {
+            var fingerprints = hostKeyFingerprints.Count > 0
+                ? hostKeyFingerprints
+                : RegionEndpoints.GetRegionEndpoints(region).SFTPHostKeyFingerprints;
+
+            if (fingerprints == null || fingerprints.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"No SFTP host key fingerprints are configured for {endpoint}, so the server's identity cannot be verified. " +
+                    "Supply the expected SHA256 fingerprints via the FeedManager constructor.");
+            }
+
+            return fingerprints;
+        }
+
+        private static bool IsTrustedHostKey(HostKeyEventArgs e, IReadOnlyList<string> expectedFingerprints)
+        {
+            return HostKeyFingerprint.Matches(e.FingerPrintSHA256, expectedFingerprints);
         }
     }
 }

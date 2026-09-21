@@ -12,6 +12,7 @@ namespace PureClarity.Managers
         private int _region;
         private string _accessKey;
         private string _secretKey;
+        private IReadOnlyList<string> _sftpHostKeyFingerprints;
 
         private ProductCollection _productCollection;
         private DeletedProductCollection _deletedProductCollection;
@@ -32,10 +33,23 @@ namespace PureClarity.Managers
         /// <param name="secretKey">The secret key is used for authentication when publishing a feed</param>
         /// <param name="region">The region defines the endpoints that are used and thus matches the geo region in which the clients PureClarity instance lives</param>
         public FeedManager(string accessKey, string secretKey, int region)
+            : this(accessKey, secretKey, region, null)
+        {
+        }
+
+        /// <summary>
+        /// Initialises the Feed Manager
+        /// </summary>
+        /// <param name="accessKey">The access key identifies the client</param>
+        /// <param name="secretKey">The secret key is used for authentication when publishing a feed</param>
+        /// <param name="region">The region defines the endpoints that are used and thus matches the geo region in which the clients PureClarity instance lives</param>
+        /// <param name="sftpHostKeyFingerprints">Expected SHA256 host key fingerprints for the region's SFTP endpoint, overriding the built-in values. Supply more than one to span a host key rotation.</param>
+        public FeedManager(string accessKey, string secretKey, int region, IReadOnlyList<string> sftpHostKeyFingerprints)
         {
             _accessKey = accessKey ?? throw new System.ArgumentNullException(nameof(accessKey));
             _secretKey = secretKey ?? throw new System.ArgumentNullException(nameof(secretKey));
             _region = region;
+            _sftpHostKeyFingerprints = sftpHostKeyFingerprints;
 
             _productCollection = new ProductCollection();
             _categoryCollection = new CategoryCollection();
@@ -253,7 +267,7 @@ namespace PureClarity.Managers
                 return new PublishResult { Success = false, Error = "Feeds not yet successfully validated" };
             }
 
-            var publishManager = new PublishManager(_accessKey, _secretKey, _region);
+            var publishManager = new PublishManager(_accessKey, _secretKey, _region, _sftpHostKeyFingerprints);
             var publishResult = new PublishResult();
 
             if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
@@ -291,7 +305,7 @@ namespace PureClarity.Managers
                 return new PublishResult { Success = false, Error = "Feeds not yet successfully validated" };
             }
 
-            var publishManager = new PublishManager(_accessKey, _secretKey, _region);
+            var publishManager = new PublishManager(_accessKey, _secretKey, _region, _sftpHostKeyFingerprints);
             var publishResult = new PublishResult();
 
             if (!_productsPushed && _productCollection.GetCollectionState().ItemCount != 0)
@@ -324,7 +338,7 @@ namespace PureClarity.Managers
                 return new PublishDeltaResult { Success = false, Error = "Feeds not yet successfully validated" };
             }
 
-            var publishManager = new PublishManager(_accessKey, _secretKey, _region);
+            var publishManager = new PublishManager(_accessKey, _secretKey, _region, _sftpHostKeyFingerprints);
             var publishResult = new PublishDeltaResult();
 
             if (!_productsPushed)
@@ -344,7 +358,7 @@ namespace PureClarity.Managers
                 return new PublishDeltaResult { Success = false, Error = "Feeds not yet successfully validated" };
             }
 
-            var publishManager = new PublishManager(_accessKey, _secretKey, _region);
+            var publishManager = new PublishManager(_accessKey, _secretKey, _region, _sftpHostKeyFingerprints);
             var publishResult = new PublishDeltaResult();
 
             if (!_productsPushed)

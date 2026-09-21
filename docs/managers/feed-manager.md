@@ -6,11 +6,17 @@ Information on creating, validating and publishing feeds.
 
 **`new FeedManager(string accessKey, string secretKey, int region)`**
 
+**`new FeedManager(string accessKey, string secretKey, int region, IReadOnlyList<string> sftpHostKeyFingerprints)`**
+
 Sets the Access Key, Secret Key and Region to use when making calls to PureClarity. These details will be provided to you at signup. 
 
 The Access Key identifies the client.
 The Secret Key is used for authentication when publishing a feed. It should be treated like a password and kept secure at all times.
 The Region is used to select the appropriate endpoints to use.
+
+Publishing a feed uploads it over SFTP, and the SFTP server's host key is verified before any credentials or data are sent. The expected SHA256 fingerprints ship with the SDK per region. `sftpHostKeyFingerprints` overrides those built-in values, which lets you keep publishing if PureClarity rotates a host key before you can upgrade the package. Supply more than one fingerprint to accept either side of a rotation. Fingerprints may be given with or without the `SHA256:` prefix.
+
+Publishing throws if no fingerprint is available for the region, rather than trusting whatever key the server presents.
 
 
 ## Adding and Removing Items
